@@ -23,7 +23,7 @@ bool CommandsCommon::isSubpath(const std::filesystem::path &prefix, const std::f
     return true;
 }
 
-void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore, std::function<void(std::function<void()>)> spawner, std::function<void(std::filesystem::directory_entry)> processFile) {
+void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore, const std::function<void(std::function<void()>)> &spawner, std::function<void(std::filesystem::directory_entry)> processFile) {
     if (!std::filesystem::is_directory(dir)) throw Exception(dir.u8string() + " is not a directory!");
 
     /// Don't process the directory if it has a ".nobackup" file

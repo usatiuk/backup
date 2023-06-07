@@ -18,7 +18,7 @@ namespace CommandsCommon {
     /// \param ignore       List of files to ignore
     /// \param spawner      Function to spawn other tasks
     /// \param processFile  Task to spawn on found files
-    void processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore, std::function<void(std::function<void()>)> spawner, std::function<void(std::filesystem::directory_entry)> processFile);
+    void processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore, const std::function<void(std::function<void()>)> &spawner, std::function<void(std::filesystem::directory_entry)> processFile);
 
     struct WorkerStats {
     public:

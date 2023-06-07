@@ -2,8 +2,8 @@
 // Created by Stepan Usatiuk on 15.04.2023.
 //
 
-#ifndef SEMBACKUP_MD5_H
-#define SEMBACKUP_MD5_H
+#ifndef SEMBACKUP_SHA_H
+#define SEMBACKUP_SHA_H
 
 #include <array>
 #include <memory>
@@ -11,24 +11,24 @@
 
 #include <openssl/evp.h>
 
-/// Class to handle MD5 hashing
+/// Class to handle SHA hashing
 /**
  * Based on: https://wiki.openssl.org/index.php/EVP_Message_Digests
  */
-class MD5 {
+class SHA {
 public:
-    /// Constructs an empty MD5 hasher instance
+    /// Constructs an empty SHA hasher instance
     /// \throws     Exception on initialization error
-    MD5();
+    SHA();
 
     /// Calculates the hash for a given \p in char vector
     /// \param in   Constant reference to an input vector
-    /// \return     MD5 hash of \p in
+    /// \return     SHA hash of \p in
     static std::string calculate(const std::vector<char> &in);
 
     /// Calculates the hash for a given \p in string
     /// \param in   Constant reference to an input string
-    /// \return     MD5 hash of \p in
+    /// \return     SHA hash of \p in
     static std::string calculate(const std::string &in);
 
     /// Append a vector of chars to the current hash
@@ -45,4 +45,4 @@ private:
 };
 
 
-#endif//SEMBACKUP_MD5_H
+#endif//SEMBACKUP_SHA_H

@@ -10,7 +10,7 @@
 
 #include "../../change_detectors/includes/ChangeDetectorFactory.h"
 #include "../../chunkers/includes/ChunkerFactory.h"
-#include "../../crypto/includes/MD5.h"
+#include "../../crypto/includes/SHA.h"
 #include "../../repo/includes/Serialize.h"
 #include "../../repo/includes/objects/Archive.h"
 #include "../../repo/includes/objects/Chunk.h"
@@ -187,8 +187,8 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
     /// The order of checks is important, because is_directory follows the symlink
     if (std::filesystem::is_symlink(orig) || std::filesystem::is_directory(orig)) {
         auto contents = File::getFileContents(orig);
-        Chunk c(ctx.repo->getId(), MD5::calculate(contents), contents);
-        File f(ctx.repo->getId(), saveAs, c.length, File::getFileMtime(orig), c.md5, {c.id}, File::getFileType(orig));
+        Chunk c(ctx.repo->getId(), SHA::calculate(contents), contents);
+        File f(ctx.repo->getId(), saveAs, c.length, File::getFileMtime(orig), c.SHA, {c.id}, File::getFileType(orig));
         ctx.repo->putObject(c);
         ctx.repo->putObject(f);
         return f.id;
@@ -200,7 +200,7 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
     if (!ifstream) throw Exception("Couldn't open " + orig.u8string() + " for reading");
     std::unique_ptr<Chunker> chunker = ChunkerFactory::getChunker(ctx.repo->getConfig(), ifstream.rdbuf());
 
-    MD5 fileHash;
+    SHA fileHash;
 
     std::vector<Object::idType> fileChunks;
     unsigned long long size = 0;

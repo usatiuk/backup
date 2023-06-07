@@ -21,10 +21,10 @@ public:
     /// \copydoc Object::serialize
     void serialize(std::vector<char> &out) const override;
 
-    /// Returns the MD5 of the chunk
+    /// Returns the SHA of the chunk
     std::string getKey() const override;
 
-    const std::string md5;          ///< MD5 hash of the chunk
+    const std::string SHA;          ///< SHA hash of the chunk
     const std::vector<char> data;   ///< Raw chunk data
     const unsigned long long length;///< Size of chunk in bytes
 };

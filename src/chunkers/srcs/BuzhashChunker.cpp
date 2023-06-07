@@ -4,7 +4,7 @@
 
 #include "../includes/BuzhashChunker.h"
 
-#include "../../crypto/includes/MD5.h"
+#include "../../crypto/includes/SHA.h"
 #include "../../utils/includes/Exception.h"
 
 BuzhashChunker::BuzhashChunker(std::streambuf *buf, unsigned long long minBytes, unsigned long long maxBytes, unsigned long long mask, uint32_t window) : Chunker(buf, maxBytes), window(window), minBytes(minBytes), mask(mask), buzhash(window) {}
@@ -18,7 +18,7 @@ std::pair<std::string, std::vector<char>> BuzhashChunker::getNext() {
     if (read != minBytes) {
         eof = true;
         rbuf.resize(read);
-        return {MD5::calculate(rbuf), rbuf};
+        return {SHA::calculate(rbuf), rbuf};
     }
 
     for (auto c: rbuf) {
@@ -38,5 +38,5 @@ std::pair<std::string, std::vector<char>> BuzhashChunker::getNext() {
         }
     }
 
-    return {MD5::calculate(rbuf), rbuf};
+    return {SHA::calculate(rbuf), rbuf};
 }

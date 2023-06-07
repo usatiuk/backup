@@ -44,7 +44,7 @@ private:
 public:
     /// Returns the next chunk of the file
     /// Returns a single empty chunk if a file is empty
-    /// \return Pair consisting of chunk's bytes and its MD5 hash
+    /// \return Pair consisting of chunk's bytes and its SHA hash
     /// \throws Exception if EOF was already reached
     virtual std::pair<std::string, std::vector<char>> getNext() = 0;
 

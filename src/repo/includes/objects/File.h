@@ -26,7 +26,7 @@ public:
 
     static inline const std::unordered_map<Type, std::string> TypeToStr{{Type::Normal, "normal"}, {Type::Symlink, "symlink"}, {Type::Directory, "directory"}};
 
-    File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string md5, std::vector<idType> chunks, Type fileType);
+    File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::vector<idType> chunks, Type fileType);
 
     /// Deserialization constructor
     File(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end);
@@ -64,7 +64,7 @@ public:
     const std::string name;        ///< Relative path to backup root, as UTF-8 string
     const unsigned long long bytes;///< Amount of bytes in the file
     const unsigned long long mtime;///< Last modification time as timestamp
-    const std::string md5;         ///< Hash of the file
+    const std::string SHA;         ///< Hash of the file
     const Type fileType;           ///< File type
 
     /// List of the chunks in file

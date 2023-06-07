@@ -11,15 +11,15 @@
 #include "../../../utils/includes/Exception.h"
 #include "../../includes/Serialize.h"
 
-File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string md5, std::vector<idType> chunks, Type fileType)
-    : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), md5(md5), fileType(fileType), chunks(chunks) {}
+File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::vector<idType> chunks, Type fileType)
+    : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), SHA(SHA), fileType(fileType), chunks(chunks) {}
 
 File::File(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end)
     : Object(in, end),
       name(Serialize::deserialize<std::string>(in, end)),
       bytes(Serialize::deserialize<unsigned long long>(in, end)),
       mtime(Serialize::deserialize<unsigned long long>(in, end)),
-      md5(Serialize::deserialize<std::remove_const<decltype(md5)>::type>(in, end)),
+      SHA(Serialize::deserialize<std::remove_const<decltype(SHA)>::type>(in, end)),
       fileType(Serialize::deserialize<std::remove_const<decltype(fileType)>::type>(in, end)),
       chunks(Serialize::deserialize<std::remove_const<decltype(chunks)>::type>(in, end)) {
     if (type != ObjectType::File) throw Exception("Type mismatch for File!");
@@ -30,7 +30,7 @@ void File::serialize(std::vector<char> &out) const {
     Serialize::serialize(name, out);
     Serialize::serialize(bytes, out);
     Serialize::serialize(mtime, out);
-    Serialize::serialize(md5, out);
+    Serialize::serialize(SHA, out);
     Serialize::serialize(fileType, out);
     Serialize::serialize(chunks, out);
 }

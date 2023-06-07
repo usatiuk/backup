@@ -2,32 +2,32 @@
 // Created by Stepan Usatiuk on 15.04.2023.
 //
 
-#include "../includes/MD5.h"
+#include "../includes/SHA.h"
 
 #include "../../utils/includes/Exception.h"
 
-std::string MD5::calculate(const std::vector<char> &in) {
-    MD5 hasher;
+std::string SHA::calculate(const std::vector<char> &in) {
+    SHA hasher;
     hasher.feedData(in);
     return hasher.getHash();
 }
 
-MD5::MD5() {
+SHA::SHA() {
     if (!mdctx)
         throw Exception("Can't create hashing context!");
 
-    if (!EVP_DigestInit_ex(mdctx.get(), EVP_md5(), nullptr))
+    if (!EVP_DigestInit_ex(mdctx.get(), EVP_sha256(), nullptr))
         throw Exception("Can't create hashing context!");
 }
 
-void MD5::feedData(const std::vector<char> &in) {
+void SHA::feedData(const std::vector<char> &in) {
     if (in.empty()) return;
     if (!EVP_DigestUpdate(mdctx.get(), in.data(), in.size()))
         throw Exception("Error hashing!");
 }
 
-std::string MD5::getHash() {
-    std::array<char, 16> out;
+std::string SHA::getHash() {
+    std::array<char, 32> out;
     unsigned int s = 0;
 
     if (!EVP_DigestFinal_ex(mdctx.get(), reinterpret_cast<unsigned char *>(out.data()), &s))
@@ -42,7 +42,7 @@ std::string MD5::getHash() {
     return {out.begin(), out.end()};
 }
 
-std::string MD5::calculate(const std::string &in) {
+std::string SHA::calculate(const std::string &in) {
     std::vector<char> tmp(in.begin(), in.end());
-    return MD5::calculate(tmp);
+    return SHA::calculate(tmp);
 }

@@ -74,20 +74,20 @@ std::string Diff::diffPercent(const ComparableFile &c1, const ComparableFile &c2
         /// Exit when asked to
         if (Signals::shouldQuit) throw Exception("Quitting");
         if (chunkp.second.empty()) continue;
-        std::string md5(chunkp.first.begin(), chunkp.first.end());
-        ch1hashes.emplace(md5);
-        hashsize[md5] = chunkp.second.size();
+        std::string SHA(chunkp.first.begin(), chunkp.first.end());
+        ch1hashes.emplace(SHA);
+        hashsize[SHA] = chunkp.second.size();
     }
 
     for (auto chunkp: ch2) {
         /// Exit when asked to
         if (Signals::shouldQuit) throw Exception("Quitting");
         if (chunkp.second.empty()) continue;
-        std::string md5(chunkp.first.begin(), chunkp.first.end());
-        hashsize[md5] = chunkp.second.size();
-        if (ch1hashes.count(md5) > 0) ch1hashes.erase(md5);
-        else if (ch1hashes.count(md5) == 0)
-            ch2diff.emplace(md5);
+        std::string SHA(chunkp.first.begin(), chunkp.first.end());
+        hashsize[SHA] = chunkp.second.size();
+        if (ch1hashes.count(SHA) > 0) ch1hashes.erase(SHA);
+        else if (ch1hashes.count(SHA) == 0)
+            ch2diff.emplace(SHA);
     }
 
     unsigned long long diff = 0;

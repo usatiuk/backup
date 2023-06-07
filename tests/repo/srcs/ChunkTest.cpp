@@ -43,11 +43,11 @@ TEST(Chunk, Deserialize) {
             EXPECT_EQ(o2.data[i], o2e.data[i]);
         }
 
-        for (int i = 0; i < o1.md5.size(); i++) {
-            EXPECT_EQ(o1.md5[i], o1e.md5[i]);
+        for (int i = 0; i < o1.SHA.size(); i++) {
+            EXPECT_EQ(o1.SHA[i], o1e.SHA[i]);
         }
-        for (int i = 0; i < o2.md5.size(); i++) {
-            EXPECT_EQ(o2.md5[i], o2e.md5[i]);
+        for (int i = 0; i < o2.SHA.size(); i++) {
+            EXPECT_EQ(o2.SHA[i], o2e.SHA[i]);
         }
     }
 }
