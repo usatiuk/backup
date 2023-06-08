@@ -1,6 +1,7 @@
 
 #include <iostream>
 
+#include "CommandMount.h"
 #include "commands/includes/Command.h"
 #include "commands/includes/CommandDiff.h"
 #include "commands/includes/CommandList.h"
@@ -113,6 +114,7 @@ int main(int argc, char *argv[]) {
         commands.emplace(CommandRun().name, std::make_unique<CommandRun>());
         commands.emplace(CommandListFiles().name, std::make_unique<CommandListFiles>());
         commands.emplace(CommandList().name, std::make_unique<CommandList>());
+        commands.emplace(CommandMount().name, std::make_unique<CommandMount>());
 
         if (commands.count(opt) == 0) {
             std::cerr << "Unknown argument" << std::endl;
