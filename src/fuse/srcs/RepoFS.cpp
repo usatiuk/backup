@@ -18,15 +18,23 @@
 
 RepoFS::RepoFS(Repository *repon, Object::idType archiveId, std::string path) : archive(Serialize::deserialize<Archive>(repon->getObject(archiveId))), path(std::move(path)) {
     RepoFS::repo = repon;
-    for (auto const &f: archive.files) {
-        auto file = Serialize::deserialize<File>(repo->getObject(f));
-        auto path = std::filesystem::u8path(file.name);
-        DirEntry *entry = &root;
-        for (auto const &subp: path) {
-            entry = &entry->children[subp];
+    auto ars = repo->getObjects(Object::ObjectType::Archive);
+    for (auto const &r: ars) {
+        auto a = Serialize::deserialize<Archive>(repon->getObject(r.second));
+        for (auto const &f: a.files) {
+            auto file = Serialize::deserialize<File>(repo->getObject(f));
+            auto path = std::filesystem::u8path(file.name);
+            DirEntry *entry = &(root.children[r.first]);
+            entry->isFakeDir = true;
+            entry->name = a.name;
+            for (auto const &subp: path) {
+                entry = &entry->children[subp];
+            }
+            entry->file.emplace(file);
+            entry->name = std::filesystem::u8path(file.name).filename().u8string();
         }
-        entry->file.emplace(file);
     }
+
     //    thread = std::thread(&RepoFS::workerFn, this);
 }
 
@@ -60,7 +68,7 @@ static int rfsGetattr(const char *path, struct stat *stbuf) {
     DirEntry *e;
     try {
         e = getf(path);
-        if (e->file->fileType == File::Type::Directory) {
+        if (e->isFakeDir || e->file->fileType == File::Type::Directory) {
             stbuf->st_mode = S_IFDIR | 0755;
             stbuf->st_nlink = 1;
         } else if (e->file->fileType == File::Type::Normal) {
@@ -88,7 +96,7 @@ static int rfsReaddir(const char *path, void *buf, fuse_fill_dir_t filler,
     filler(buf, "..", NULL, 0);
 
     for (auto const &e: entry->children) {
-        auto pstr = std::filesystem::u8path(e.second.file->name).filename().u8string();
+        auto pstr = e.second.name;
         std::cout << pstr << std::endl;
         filler(buf, pstr.c_str(), NULL, 0);
     }

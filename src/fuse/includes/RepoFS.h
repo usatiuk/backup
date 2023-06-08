@@ -14,6 +14,8 @@
 struct DirEntry {
     std::unordered_map<std::string, DirEntry> children;
     std::optional<File> file;
+    std::string name;
+    bool isFakeDir = false;
 };
 
 class RepoFS {
