@@ -9,5 +9,5 @@ CommandMount::CommandMount() : Command("mount") {
 }
 
 void CommandMount::run(Context ctx) {
-    RepoFS::start(ctx.repo, "./hi");
+    RepoFS::start(ctx.repo, ctx.repo->getConfig().getStr("to"));
 }

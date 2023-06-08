@@ -120,6 +120,9 @@ AIDS=()
 OUT=$($CMD list --repo testdir/to1 --password asdff)
 echo "$OUT"
 
+mkdir testmount
+$CMD mount --repo testdir/to1 --password asdff --to testmount &
+
 while IFS= read -r l; do
   ((i++))
   aid=$(echo $l | grep -Eo '[0-9]+' | tail -1)
@@ -129,8 +132,15 @@ while IFS= read -r l; do
     echo "Archive not restored properly!"
     exit 1
   fi
+    if ! diff --no-dereference -r testmount/$((aid)) testdir/res$((i)); then
+      echo "Archive not mounted properly!"
+      exit 1
+    fi
+
   echo "Restore $((i)) OK"
 done <<< "$OUT"
+
+umount testmount
 
 OUT=$($CMD diff --from testdata/4 --repo testdir/to1 --password asdff --progress none --verbose 1 --aid ${AIDS[0]} --aid2 ${AIDS[1]})
 echo "$OUT"
@@ -290,5 +300,6 @@ echo "Backup 11 ok"
 
 rm -rf testdata
 rm -rf testdir
+rm -rf testmount
 
 exit 0

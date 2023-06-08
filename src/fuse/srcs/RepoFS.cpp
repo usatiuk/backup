@@ -38,7 +38,7 @@ static int rfsGetattr(const char *path, struct stat *stbuf) {
         e = getf(path);
         if (e->isFakeDir || e->file->fileType == File::Type::Directory) {
             stbuf->st_mode = S_IFDIR | 0755;
-            stbuf->st_nlink = 1;
+            stbuf->st_nlink = 2;
         } else if (e->file->fileType == File::Type::Normal) {
             stbuf->st_mode = S_IFREG | 0444;
             stbuf->st_nlink = 1;
@@ -137,9 +137,9 @@ void RepoFS::start(Repository *repo, std::string path) {
         for (auto const &f: a.files) {
             auto file = Serialize::deserialize<File>(repo->getObject(f));
             auto path = std::filesystem::u8path(file.name);
-            DirEntry *entry = &(root.children[r.first]);
+            DirEntry *entry = &(root.children[std::to_string(a.id)]);
             entry->isFakeDir = true;
-            entry->name = a.name;
+            entry->name = std::to_string(a.id);
             for (auto const &subp: path) {
                 entry = &entry->children[subp];
             }
