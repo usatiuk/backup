@@ -5,6 +5,8 @@
 #ifndef BACKUP_REPOFS_H
 #define BACKUP_REPOFS_H
 
+#define FUSE_USE_VERSION 26
+
 #include <thread>
 
 #include "Repository.h"
@@ -20,25 +22,12 @@ struct DirEntry {
 
 class RepoFS {
 public:
-    RepoFS(Repository *repo, Object::idType archiveId, std::string path);
+    static void start(Repository *repo, std::string path);
 
-    RepoFS &operator=(RepoFS rhs) = delete;
-    RepoFS(const RepoFS &orig) = delete;
-
-    ~RepoFS();
-
-    void workerFn();
     static inline DirEntry root;
     static inline Repository *repo;
 
-private:
-    std::atomic<bool> stop = false;///< Stop flag
-
-    Archive archive;
-    std::string path;
-
-
-    //    std::thread thread;///< Worker thread
+    virtual ~RepoFS() = 0;
 };
 
 

@@ -7,7 +7,7 @@
 #include "../../includes/Serialize.h"
 
 FileBuffer::FileBuffer(const Repository *repo, Object::idType fileId) : repo(repo), file(Serialize::deserialize<File>(repo->getObject(fileId))), chunksQueue() {
-    for (auto const &id: file.chunks) chunksQueue.emplace(id);
+    for (auto const &id: file.chunks) chunksQueue.emplace(id.second);
 };
 
 int FileBuffer::sync() {

@@ -2,49 +2,17 @@
 // Created by Stepan Usatiuk on 07.06.2023.
 //
 
+
 #include "../includes/RepoFS.h"
 
-#define FUSE_USE_VERSION 26
-
-#include <errno.h>
+#include <cerrno>
+#include <cstring>
 #include <fcntl.h>
 #include <fuse.h>
 #include <iostream>
-#include <stdio.h>
-#include <string.h>
 
 #include "Serialize.h"
 #include "objects/Chunk.h"
-
-RepoFS::RepoFS(Repository *repon, Object::idType archiveId, std::string path) : archive(Serialize::deserialize<Archive>(repon->getObject(archiveId))), path(std::move(path)) {
-    RepoFS::repo = repon;
-    auto ars = repo->getObjects(Object::ObjectType::Archive);
-    for (auto const &r: ars) {
-        auto a = Serialize::deserialize<Archive>(repon->getObject(r.second));
-        for (auto const &f: a.files) {
-            auto file = Serialize::deserialize<File>(repo->getObject(f));
-            auto path = std::filesystem::u8path(file.name);
-            DirEntry *entry = &(root.children[r.first]);
-            entry->isFakeDir = true;
-            entry->name = a.name;
-            for (auto const &subp: path) {
-                entry = &entry->children[subp];
-            }
-            entry->file.emplace(file);
-            entry->name = std::filesystem::u8path(file.name).filename().u8string();
-        }
-    }
-
-    //    thread = std::thread(&RepoFS::workerFn, this);
-}
-
-RepoFS::~RepoFS() {
-    //    stop = true;
-    //    thread.join();
-}
-
-static const char *hello_str = "Hello World!\n";
-static const char *hello_path = "/hello";
 
 DirEntry *getf(std::string path) {
     auto p = std::filesystem::relative(std::filesystem::u8path(path), "/");
@@ -127,18 +95,27 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset,
             entry = getf(path);
         } catch (...) { return -ENOENT; }
 
-    std::vector<char> data;
 
-    for (auto const &id: entry->file->chunks) {
-        auto ch = Serialize::deserialize<Chunk>(RepoFS::repo->getObject(id));
-        data.insert(data.end(), ch.data.begin(), ch.data.end());
-    }
-
-    len = data.size();
+    len = entry->file->bytes;
     if (offset < len) {
         if (offset + size > len)
             size = len - offset;
-        memcpy(buf, data.data() + offset, size);
+
+        auto curchunk = entry->file->chunks.upper_bound(offset);
+        --curchunk;
+        if (curchunk == entry->file->chunks.end()) {
+            std::cerr << "OOOOOPS" << std::endl;
+        }
+        size_t curInBuf = 0;
+        size_t curInChunk = offset - curchunk->first;
+        while (curInBuf < size) {
+            auto chunk = Serialize::deserialize<Chunk>(RepoFS::repo->getObject(curchunk->second));
+            size_t read = std::min((size_t) chunk.length - curInChunk, size - curInBuf);
+            memcpy(buf + curInBuf, chunk.data.data() + curInChunk, read);
+            curInBuf += read;
+            curInChunk = 0;
+            ++curchunk;
+        }
     } else
         size = 0;
 
@@ -152,10 +129,27 @@ static struct fuse_operations rfsOps = {
         .read = rfsRead,
 };
 
-void RepoFS::workerFn() {
-    int argc = 3;
-    char *argv[] = {"", "-d", const_cast<char *>(path.c_str())};
+void RepoFS::start(Repository *repo, std::string path) {
+    RepoFS::repo = repo;
+    auto ars = repo->getObjects(Object::ObjectType::Archive);
+    for (auto const &r: ars) {
+        auto a = Serialize::deserialize<Archive>(repo->getObject(r.second));
+        for (auto const &f: a.files) {
+            auto file = Serialize::deserialize<File>(repo->getObject(f));
+            auto path = std::filesystem::u8path(file.name);
+            DirEntry *entry = &(root.children[r.first]);
+            entry->isFakeDir = true;
+            entry->name = a.name;
+            for (auto const &subp: path) {
+                entry = &entry->children[subp];
+            }
+            entry->file.emplace(file);
+            entry->name = std::filesystem::u8path(file.name).filename().u8string();
+        }
+    }
+
+
+    int argc = 5;
+    char *argv[] = {"", "-d", "-s", "-f", const_cast<char *>(path.c_str())};
     std::cout << static_cast<int>(fuse_main(argc, argv, &rfsOps, nullptr));
-    //    while (!stop) {
-    //    }
 }

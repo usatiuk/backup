@@ -9,6 +9,5 @@ CommandMount::CommandMount() : Command("mount") {
 }
 
 void CommandMount::run(Context ctx) {
-    RepoFS rfs(ctx.repo, ctx.repo->getObjects(Object::ObjectType::Archive).begin()->second, "./hi");
-    rfs.workerFn();
+    RepoFS::start(ctx.repo, "./hi");
 }

@@ -11,8 +11,8 @@
 #include "../../../utils/includes/Exception.h"
 #include "../../includes/Serialize.h"
 
-File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::vector<idType> chunks, Type fileType)
-    : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), SHA(SHA), fileType(fileType), chunks(chunks) {}
+File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::map<size_t, idType> chunks, Type fileType)
+    : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), SHA(SHA), fileType(fileType), chunks(std::move(chunks)) {}
 
 File::File(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end)
     : Object(in, end),

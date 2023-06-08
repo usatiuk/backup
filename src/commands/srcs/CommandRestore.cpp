@@ -103,7 +103,7 @@ std::string CommandRestore::backupRestoreFile(const File &file, const std::files
         return fullpath.u8string();
     }
     if (file.fileType == File::Type::Symlink) {
-        auto dest = Serialize::deserialize<Chunk>(ctx.repo->getObject(file.chunks[0]));
+        auto dest = Serialize::deserialize<Chunk>(ctx.repo->getObject(file.chunks.at(0)));
         std::filesystem::create_symlink(std::filesystem::u8path(std::string{dest.data.begin(), dest.data.end()}), fullpath);
         callback(0, 0, 1);
         return fullpath.u8string();
@@ -113,7 +113,7 @@ std::string CommandRestore::backupRestoreFile(const File &file, const std::files
     for (const auto cid: file.chunks) {
         if (Signals::shouldQuit) throw Exception("Quitting!");
 
-        Chunk c = Serialize::deserialize<Chunk>(ctx.repo->getObject(cid));
+        Chunk c = Serialize::deserialize<Chunk>(ctx.repo->getObject(cid.second));
         if (!c.data.empty()) {
             ostream.rdbuf()->sputn(c.data.data(), c.data.size());
             callback(c.data.size(), 0, 0);

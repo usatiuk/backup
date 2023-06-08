@@ -188,7 +188,7 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
     if (std::filesystem::is_symlink(orig) || std::filesystem::is_directory(orig)) {
         auto contents = File::getFileContents(orig);
         Chunk c(ctx.repo->getId(), SHA::calculate(contents), contents);
-        File f(ctx.repo->getId(), saveAs, c.length, File::getFileMtime(orig), c.SHA, {c.id}, File::getFileType(orig));
+        File f(ctx.repo->getId(), saveAs, c.length, File::getFileMtime(orig), c.SHA, {{0, c.id}}, File::getFileType(orig));
         ctx.repo->putObject(c);
         ctx.repo->putObject(f);
         return f.id;
@@ -202,7 +202,7 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
 
     SHA fileHash;
 
-    std::vector<Object::idType> fileChunks;
+    std::map<size_t, Object::idType> fileChunks;
     unsigned long long size = 0;
 
     for (auto chunkp: *chunker) {
@@ -210,7 +210,6 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
         if (Signals::shouldQuit) break;
 
         Object::idType chunkId;
-        size += chunkp.second.size();
         if (ctx.repo->getConfig().getStr("dedup") == "on" && ctx.repo->exists(Object::ObjectType::Chunk, chunkp.first)) {
             /// If the chunk already exists, reuse it
             chunkId = ctx.repo->getObjectId(Object::ObjectType::Chunk, chunkp.first);
@@ -223,7 +222,8 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
             ctx.repo->putObject(c);
         }
         fileHash.feedData(chunkp.second);
-        fileChunks.emplace_back(chunkId);
+        fileChunks.emplace(size, chunkId);
+        size += chunkp.second.size();
     }
 
     /// We might have exited in the loop before, so we don't save an incomplete file
