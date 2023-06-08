@@ -7,12 +7,16 @@
 
 #define FUSE_USE_VERSION 26
 
+#include <optional>
+#include <string>
 #include <thread>
+#include <unordered_map>
 
 #include "Repository.h"
 #include "objects/Archive.h"
 #include "objects/File.h"
 
+// TODO: fix it so it compiles with something other than clang
 struct DirEntry {
     std::unordered_map<std::string, DirEntry> children;
     std::optional<File> file;

@@ -124,9 +124,9 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset,
 
 static struct fuse_operations rfsOps = {
         .getattr = rfsGetattr,
-        .readdir = rfsReaddir,
         .open = rfsOpen,
         .read = rfsRead,
+        .readdir = rfsReaddir,
 };
 
 void RepoFS::start(Repository *repo, std::string path) {
