@@ -7,4 +7,4 @@ add_library(filters srcs/CheckFilter.cpp srcs/Filter.cpp srcs/FilterAES.cpp srcs
 
 target_include_directories(filters PUBLIC includes)
 
-target_link_libraries(filters ZLIB::ZLIB utils)
+target_link_libraries(filters ZLIB::ZLIB utils crypto)
