@@ -136,6 +136,8 @@ static int rfsReadlink(const char *path, char *buf, size_t size) {
     if (entry->file->fileType != File::Type::Symlink) return -ENOENT;
     auto dst = Serialize::deserialize<Chunk>(RepoFS::repo->getObject(entry->file->chunks.at(0)));
     strncpy(buf, dst.data.data(), std::min(dst.data.size(), size));
+
+    return 0;
 }
 
 static struct fuse_operations rfsOps = {
