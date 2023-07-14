@@ -89,7 +89,6 @@ public:
             {"repo", {std::nullopt, KeyType::STRING, false, "Repository root"}},
             {"to", {std::nullopt, KeyType::STRING, false, "Destination of restore"}},
             {"from", {std::nullopt, KeyType::STRING, true, "Backed up folder"}},
-            {"type", {"normal", KeyType::STRING, false, "Type of archive"}},
             {"aid", {std::nullopt, KeyType::INT, false, "ID of archive to restore/compare to"}},
             {"aid2", {std::nullopt, KeyType::INT, false, "ID of archive to compare with"}},
             {"threads", {std::nullopt, KeyType::INT, false, "Number of threads to use"}},
@@ -101,10 +100,8 @@ public:
             {"chunker-max", {"4096", KeyType::INT, true, "Max chunk size in KB"}},
             {"chunker-mask", {"20", KeyType::INT, true, "Chunker hash bit mask (mask of n bits results in average chunk size of 2^n bytes)"}},
             {"repo-target", {"128", KeyType::INT, true, "Target size of files for FileRepository"}},
-            {"full-period", {"2", KeyType::INT, true, "Interval between forced full backups"}},
             {"progress", {"pretty", KeyType::STRING, false, "How to print progress (simple, pretty, none)"}},
             {"verbose", {"1", KeyType::INT, false, "Message verbosity (0 - error, 1 - info, -1 - quiet)"}},
-            {"dedup", {"on", KeyType::STRING, true, "Turns deduplication on/off"}},
             {"change-detectors", {"type,size,etime", KeyType::LIST, true, "Change detectors to use (in order)"}},
             {"diff-mode", {"normal", KeyType::STRING, false, "Diff mode (file or normal)"}},
     };

@@ -60,7 +60,7 @@ echo "testtestasdf9uuu" > testdata/4/filexd
 
 echo "Data created"
 
-if ! $CMD init --repo testdir/to1 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e --full-period 999; then
+if ! $CMD init --repo testdir/to1 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e; then
   echo "Error creating repo!"
   exit 1
 fi

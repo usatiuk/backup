@@ -49,7 +49,7 @@ cat testdata/7/b >> testdata/8/b
 
 echo "Data created"
 
-if ! $CMD init --repo testdir/to1 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e --full-period 999; then
+if ! $CMD init --repo testdir/to1 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e; then
   echo "Error creating repo!"
   exit 1
 fi
@@ -107,7 +107,7 @@ echo "Backup 6 ok"
 
 OUT=$($CMD run --from testdata/7 --repo testdir/to1 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
+if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 7 dir!"
   exit 1
 fi
@@ -212,7 +212,7 @@ echo "Repo created"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( (echo "$OUT" | grep -q 'Backup is full because there are no backups')&&( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' ) ); then
+if ! ( ( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' ) ); then
   echo "Error backing up 1 dir!"
   exit 1
 fi
@@ -220,7 +220,7 @@ echo "Backup 1 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ! ( echo "$OUT" | grep -q 'Backup is full' ) && ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
   echo "Error backing up 2 dir!"
   exit 1
 fi
@@ -228,7 +228,7 @@ echo "Backup 2 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ! ( echo "$OUT" | grep -q 'Backup is full' )&& ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 3 dir!"
   exit 1
 fi
@@ -236,7 +236,7 @@ echo "Backup 3 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Backup is full because of the interval') &&( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' )); then
+if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
   echo "Error backing up 4 dir!"
   exit 1
 fi
@@ -244,7 +244,7 @@ echo "Backup 4 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ! ( echo "$OUT" | grep -q 'Backup is full' ) && ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 5 dir!"
   exit 1
 fi
@@ -252,7 +252,7 @@ echo "Backup 5 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ! ( echo "$OUT" | grep -q 'Backup is full' ) && ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 6 dir!"
   exit 1
 fi
@@ -260,15 +260,15 @@ echo "Backup 6 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Backup is full because of the interval' ) &&( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' ) ); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 7 dir!"
   exit 1
 fi
 echo "Backup 7 ok"
 
-OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1 --type full)
+OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Backup is full because of the config') &&( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' )); then
+if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
   echo "Error backing up 8 dir!"
   exit 1
 fi
@@ -276,7 +276,7 @@ echo "Backup 8 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ! ( echo "$OUT" | grep -q 'Backup is full' ) && ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 9 dir!"
   exit 1
 fi
@@ -284,7 +284,7 @@ echo "Backup 9 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! ( ! ( echo "$OUT" | grep -q 'Backup is full' ) && ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
+if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 10 dir!"
   exit 1
 fi
@@ -292,7 +292,7 @@ echo "Backup 10 ok"
 
 OUT=$($CMD run --from testdata/1 --repo testdir/to2 --password asdff --progress simple --verbose 1)
 echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Backup is full because of the interval' ) &&( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' ) ); then
+if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
   echo "Error backing up 11 dir!"
   exit 1
 fi

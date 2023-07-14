@@ -34,34 +34,6 @@ void CommandRun::run(Context ctx) {
     RunnerStats runnerStats;///< Backup target metrics
 
     std::filesystem::path from = ctx.repo->getConfig().getStr("from");///< Directory to back up from
-    bool fullBackup = ctx.repo->getConfig().getStr("type") == "full";
-    if (fullBackup) {
-        ctx.logger->write("Backup is full because of the config\n", 1);
-    }
-    /// For progtest task compliance
-    if (!fullBackup) {
-        /// If it's time for full backup as per config, force it
-        auto per = ctx.repo->getConfig().getInt("full-period");
-        auto list = ctx.repo->getObjects(Object::ObjectType::Archive);
-        std::sort(list.begin(), list.end(), [](const auto &l, const auto &r) { return l.second > r.second; });
-        int lastInc = 0;
-        for (auto const &a: list) {
-            auto archiveO = Serialize::deserialize<Archive>(ctx.repo->getObject(a.second));
-            if (!archiveO.isFull) {
-                lastInc++;
-                continue;
-            } else
-                break;
-        }
-        if (lastInc >= per) {
-            fullBackup = true;
-            ctx.logger->write("Backup is full because of the interval\n", 1);
-        }
-        if (list.size() == 0) {
-            fullBackup = true;
-            ctx.logger->write("Backup is full because there are no backups\n", 1);
-        }
-    }
 
     /// Worker callback, bound to the local workerStats variable
     workerStatsFunction workerCallback = [&](unsigned long long bytesWritten, unsigned long long bytesSkipped, unsigned long long filesWritten) {
@@ -72,14 +44,6 @@ void CommandRun::run(Context ctx) {
     std::mutex filesLock;             ///< Files vector lock
     /// Function to safely add new file ids to `files`
     std::function addFile = [&](Object::idType id) {std::lock_guard lock(filesLock); files.emplace_back(id); };
-
-    /// Technically the progtest task says that only the files from the last backup should be compared against...
-    std::map<std::string, Object::idType> prevArchiveFiles;
-    {
-        auto prevArchiveFilesList = ctx.repo->getObjects(Object::ObjectType::File);
-        prevArchiveFiles = {prevArchiveFilesList.begin(), prevArchiveFilesList.end()};
-    }
-    ctx.repo->clearCache(Object::ObjectType::File);
 
     {
         /// Calculate the average speed of backup
@@ -123,32 +87,24 @@ void CommandRun::run(Context ctx) {
         };
 
         /// Task to process an individual file in the backup
-        std::function<void(std::filesystem::path)> processFile;
-        /// If it's a full backup, just save the file, otherwise re-chunk it only if it's changed
-        if (fullBackup)
-            processFile =
-                    [&, this](const std::filesystem::path &p) {
-                        saveFile(p, p.lexically_relative(from).u8string());
-                    };
-        else
-            processFile =
-                    [&, this](const std::filesystem::path &p) {
-                        auto relPath = p.lexically_relative(from).u8string();
+        std::function<void(std::filesystem::path)> processFile =
+                [&, this](const std::filesystem::path &p) {
+                    auto relPath = p.lexically_relative(from).u8string();
 
-                        if (prevArchiveFiles.count(relPath) != 0) {
-                            File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(prevArchiveFiles.at(relPath)));
-                            if (!changeDetector.check({repoFile, ctx.repo}, {p, from})) {
-                                addFile(repoFile.id);
-                                ctx.repo->addToCache(repoFile);
-                                progress.print("Skipped: " + relPath, 1);
-                                runnerStats.filesSkipped++;
-                                return;
-                            }
+                    if (ctx.repo->exists(Object::ObjectType::File, relPath) != 0) {
+                        File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(Object::ObjectType::File, relPath));
+                        if (!changeDetector.check({repoFile, ctx.repo}, {p, from})) {
+                            addFile(repoFile.id);
+                            ctx.repo->addToCache(repoFile);
+                            progress.print("Skipped: " + relPath, 1);
+                            runnerStats.filesSkipped++;
+                            return;
                         }
+                    }
 
-                        saveFile(p, relPath);
-                        return;
-                    };
+                    saveFile(p, relPath);
+                    return;
+                };
 
         /// Start the backup with the root directory and empty ignore list
         threadPool.push([&]() {
@@ -178,7 +134,7 @@ void CommandRun::run(Context ctx) {
     s << std::put_time(ltime, "%d-%m-%Y %H-%M-%S");
     /// Avoid archive name collisions
     while (ctx.repo->exists(Object::ObjectType::Archive, s.str())) s << "N";
-    Archive a(ctx.repo->getId(), s.str(), time, files, fullBackup);
+    Archive a(ctx.repo->getId(), s.str(), time, files);
     ctx.repo->putObject(a);
 }
 
@@ -210,7 +166,7 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
         if (Signals::shouldQuit) break;
 
         Object::idType chunkId;
-        if (ctx.repo->getConfig().getStr("dedup") == "on" && ctx.repo->exists(Object::ObjectType::Chunk, chunkp.first)) {
+        if (ctx.repo->exists(Object::ObjectType::Chunk, chunkp.first)) {
             /// If the chunk already exists, reuse it
             chunkId = ctx.repo->getObjectId(Object::ObjectType::Chunk, chunkp.first);
             callback(0, chunkp.second.size(), 0);

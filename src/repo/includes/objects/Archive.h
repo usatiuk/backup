@@ -12,7 +12,7 @@
 /// Object representing a backup
 class Archive : public Object {
 public:
-    Archive(Object::idType id, std::string name, unsigned long long mtime, std::vector<idType> files, bool full = false);
+    Archive(Object::idType id, std::string name, unsigned long long mtime, std::vector<idType> files);
 
     /// \copydoc Object::serialize
     Archive(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end);
@@ -25,7 +25,6 @@ public:
     const std::string name;         ///< Archive name
     const unsigned long long mtime; ///< Time of creation
     const std::vector<idType> files;///< List of ids of File objects in the Archive
-    const bool isFull = false;      ///< Whether this was a full archive
 };
 
 
