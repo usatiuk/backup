@@ -5,7 +5,7 @@
 #include "../includes/CommandMount.h"
 #include "RepoFS.h"
 
-CommandMount::CommandMount() : Command("mount") {
+CommandMount::CommandMount() : Command() {
 }
 
 void CommandMount::run(Context ctx) {

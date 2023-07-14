@@ -10,7 +10,7 @@
 #include "../../repo/includes/objects/File.h"
 #include "../../utils/includes/BytesFormatter.h"
 
-CommandListFiles::CommandListFiles() : Command("list-files") {
+CommandListFiles::CommandListFiles() : Command() {
 }
 
 void CommandListFiles::run(Context ctx) {

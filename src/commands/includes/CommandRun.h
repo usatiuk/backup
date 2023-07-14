@@ -14,6 +14,7 @@ class CommandRun : public Command {
 public:
     CommandRun();
     void run(Context ctx) override;
+    static constexpr std::string_view name{"run"};
 
 private:
     /// Internal function to chunk the file and save it

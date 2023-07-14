@@ -14,6 +14,7 @@ class CommandListFiles : public Command {
 public:
     CommandListFiles();
     void run(Context ctx) override;
+    static constexpr std::string_view name{"list-files"};
 };
 
 

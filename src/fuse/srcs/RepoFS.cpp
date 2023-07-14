@@ -137,7 +137,10 @@ void RepoFS::start(Repository *repo, std::string path) {
         for (auto const &f: a.files) {
             auto file = Serialize::deserialize<File>(repo->getObject(f));
             // TODO: symlinks
-            if (file.fileType == File::Type::Symlink) throw Exception("Symlinks not supported yet!");
+            if (file.fileType == File::Type::Symlink) {
+                std::cerr << "Symlinks not supported yet!" << std::endl;
+                continue;
+            }
             auto path = std::filesystem::u8path(file.name);
             DirEntry *entry = &(root.children[std::to_string(a.id)]);
             entry->isFakeDir = true;

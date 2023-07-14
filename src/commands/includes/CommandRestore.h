@@ -16,6 +16,7 @@ class CommandRestore : public Command {
 public:
     CommandRestore();
     void run(Context ctx) override;
+    static constexpr std::string_view name{"restore"};
 
 private:
     /// Internal function to restore a file

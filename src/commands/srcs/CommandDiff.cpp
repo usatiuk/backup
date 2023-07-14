@@ -19,7 +19,7 @@
 
 using namespace CommandsCommon;
 
-CommandDiff::CommandDiff() : Command("diff") {}
+CommandDiff::CommandDiff() : Command() {}
 
 void CommandDiff::run(Context ctx) {
     std::string diffMode = ctx.repo->getConfig().getStr("diff-mode");

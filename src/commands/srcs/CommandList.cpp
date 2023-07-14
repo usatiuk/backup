@@ -4,7 +4,7 @@
 
 #include "../includes/CommandList.h"
 
-CommandList::CommandList() : Command("list") {
+CommandList::CommandList() : Command() {
 }
 
 void CommandList::run(Context ctx) {

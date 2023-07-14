@@ -26,7 +26,7 @@
 
 using namespace CommandsCommon;
 
-CommandRun::CommandRun() : Command("run") {
+CommandRun::CommandRun() : Command() {
 }
 
 void CommandRun::run(Context ctx) {

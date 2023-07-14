@@ -14,14 +14,7 @@ public:
     virtual void run(Context ctx) = 0;
 
     /// Default virtual destructor
-    virtual ~Command() = 0;
-
-    /// The name of the command
-    const std::string name;
-
-protected:
-    /// Constructs a command with name \p name
-    Command(std::string name);
+    virtual ~Command() = default;
 };
 
 

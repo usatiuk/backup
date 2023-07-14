@@ -20,7 +20,7 @@
 
 using namespace CommandsCommon;
 
-CommandRestore::CommandRestore() : Command("restore") {
+CommandRestore::CommandRestore() : Command() {
 }
 
 void CommandRestore::run(Context ctx) {

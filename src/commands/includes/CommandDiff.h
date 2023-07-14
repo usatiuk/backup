@@ -17,6 +17,7 @@ class CommandDiff : public Command {
 public:
     CommandDiff();
     void run(Context ctx) override;
+    static constexpr std::string_view name{"diff"};
 };
 
 

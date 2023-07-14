@@ -14,6 +14,7 @@ class CommandList : public Command {
 public:
     CommandList();
     void run(Context ctx) override;
+    static constexpr std::string_view name{"list"};
 };
 
 
