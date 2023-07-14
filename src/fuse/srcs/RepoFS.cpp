@@ -43,6 +43,10 @@ static int rfsGetattr(const char *path, struct stat *stbuf) {
             stbuf->st_mode = S_IFREG | 0444;
             stbuf->st_nlink = 1;
             stbuf->st_size = e->file->bytes;
+        } else if (e->file->fileType == File::Type::Symlink) {
+            stbuf->st_mode = S_IFLNK | 0777;
+            stbuf->st_nlink = 1;
+            stbuf->st_size = e->file->bytes;
         }
     } catch (...) { return -ENOENT; }
 
@@ -122,8 +126,21 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset,
     return size;
 }
 
+static int rfsReadlink(const char *path, char *buf, size_t size) {
+    DirEntry *entry = &RepoFS::root;
+    if (std::string(path) != "/")
+        try {
+            entry = getf(path);
+        } catch (...) { return -ENOENT; }
+
+    if (entry->file->fileType != File::Type::Symlink) return -ENOENT;
+    auto dst = Serialize::deserialize<Chunk>(RepoFS::repo->getObject(entry->file->chunks.at(0)));
+    strncpy(buf, dst.data.data(), std::min(dst.data.size(), size));
+}
+
 static struct fuse_operations rfsOps = {
         .getattr = rfsGetattr,
+        .readlink = rfsReadlink,
         .open = rfsOpen,
         .read = rfsRead,
         .readdir = rfsReaddir,
@@ -136,11 +153,6 @@ void RepoFS::start(Repository *repo, std::string path) {
         auto a = Serialize::deserialize<Archive>(repo->getObject(r.second));
         for (auto const &f: a.files) {
             auto file = Serialize::deserialize<File>(repo->getObject(f));
-            // TODO: symlinks
-            if (file.fileType == File::Type::Symlink) {
-                std::cerr << "Symlinks not supported yet!" << std::endl;
-                continue;
-            }
             auto path = std::filesystem::u8path(file.name);
             DirEntry *entry = &(root.children[std::to_string(a.id)]);
             entry->isFakeDir = true;
