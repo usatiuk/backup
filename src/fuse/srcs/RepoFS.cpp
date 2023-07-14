@@ -16,10 +16,10 @@
 
 DirEntry *getf(std::string path) {
     auto p = std::filesystem::relative(std::filesystem::u8path(path), "/");
-    DirEntry *entry = &RepoFS::root;
+    DirEntry *entry = RepoFS::root.get();
     if (p != ".")
         for (auto const &subp: p) {
-            entry = &entry->children.at(subp);
+            entry = entry->children.at(subp).get();
         }
     return entry;
 }
@@ -58,7 +58,7 @@ static int rfsReaddir(const char *path, void *buf, fuse_fill_dir_t filler,
     (void) offset;
     (void) fi;
 
-    DirEntry *entry = &RepoFS::root;
+    DirEntry *entry = RepoFS::root.get();
     if (std::string(path) != "/")
         try {
             entry = getf(path);
@@ -68,7 +68,7 @@ static int rfsReaddir(const char *path, void *buf, fuse_fill_dir_t filler,
     filler(buf, "..", NULL, 0);
 
     for (auto const &e: entry->children) {
-        auto pstr = e.second.name;
+        auto pstr = e.second->name;
         std::cout << pstr << std::endl;
         filler(buf, pstr.c_str(), NULL, 0);
     }
@@ -77,7 +77,7 @@ static int rfsReaddir(const char *path, void *buf, fuse_fill_dir_t filler,
 }
 
 static int rfsOpen(const char *path, struct fuse_file_info *fi) {
-    DirEntry *entry = &RepoFS::root;
+    DirEntry *entry = RepoFS::root.get();
     if (std::string(path) != "/")
         try {
             entry = getf(path);
@@ -93,7 +93,7 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset,
                    struct fuse_file_info *fi) {
     size_t len;
     (void) fi;
-    DirEntry *entry = &RepoFS::root;
+    DirEntry *entry = RepoFS::root.get();
     if (std::string(path) != "/")
         try {
             entry = getf(path);
@@ -127,7 +127,7 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset,
 }
 
 static int rfsReadlink(const char *path, char *buf, size_t size) {
-    DirEntry *entry = &RepoFS::root;
+    DirEntry *entry = RepoFS::root.get();
     if (std::string(path) != "/")
         try {
             entry = getf(path);
@@ -154,11 +154,15 @@ void RepoFS::start(Repository *repo, std::string path) {
         for (auto const &f: a.files) {
             auto file = Serialize::deserialize<File>(repo->getObject(f));
             auto path = std::filesystem::u8path(file.name);
-            DirEntry *entry = &(root.children[std::to_string(a.id)]);
+            DirEntry *entry = root->children[std::to_string(a.id)].get()
+                                      ? root->children[std::to_string(a.id)].get()
+                                      : (root->children[std::to_string(a.id)] = std::make_unique<DirEntry>()).get();
             entry->isFakeDir = true;
             entry->name = std::to_string(a.id);
             for (auto const &subp: path) {
-                entry = &entry->children[subp];
+                entry = entry->children[subp].get()
+                                ? entry->children[subp].get()
+                                : (entry->children[subp] = std::make_unique<DirEntry>()).get();
             }
             entry->file.emplace(file);
             entry->name = std::filesystem::u8path(file.name).filename().u8string();

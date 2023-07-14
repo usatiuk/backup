@@ -7,6 +7,7 @@
 
 #define FUSE_USE_VERSION 26
 
+#include <memory>
 #include <optional>
 #include <string>
 #include <thread>
@@ -16,9 +17,8 @@
 #include "objects/Archive.h"
 #include "objects/File.h"
 
-// TODO: fix it so it compiles with something other than clang
 struct DirEntry {
-    std::unordered_map<std::string, DirEntry> children;
+    std::unordered_map<std::string, std::unique_ptr<DirEntry>> children;
     std::optional<File> file;
     std::string name;
     bool isFakeDir = false;
@@ -28,7 +28,7 @@ class RepoFS {
 public:
     static void start(Repository *repo, std::string path);
 
-    static inline DirEntry root;
+    static inline std::unique_ptr<DirEntry> root{std::make_unique<DirEntry>()};
     static inline Repository *repo;
 
     virtual ~RepoFS() = 0;
