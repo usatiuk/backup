@@ -69,7 +69,6 @@ static int rfsReaddir(const char *path, void *buf, fuse_fill_dir_t filler,
 
     for (auto const &e: entry->children) {
         auto pstr = e.second->name;
-        std::cout << pstr << std::endl;
         filler(buf, pstr.c_str(), NULL, 0);
     }
 
@@ -172,7 +171,7 @@ void RepoFS::start(Repository *repo, std::string path) {
     }
 
 
-    int argc = 5;
-    char *argv[] = {"", "-d", "-s", "-f", const_cast<char *>(path.c_str())};
+    int argc = 3;
+    char *argv[] = {"", "-f", const_cast<char *>(path.c_str())};
     std::cout << static_cast<int>(fuse_main(argc, argv, &rfsOps, nullptr));
 }
