@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
+project(backup)
+
 if (SANITIZE STREQUAL "YES")
     message(WARNING "Enabling sanitizers!")
     add_compile_options(-Wall -Wextra -pedantic -Wshadow -Wformat=2 -Wfloat-equal -D_GLIBCXX_DEBUG -Wconversion -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2)
@@ -12,10 +14,13 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
     add_link_options(-flto)
 endif ()
 
+if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(-O3)
+    add_link_options(-O3)
+endif ()
+
 add_compile_options(-rdynamic)
 add_link_options(-rdynamic)
-
-project(backup)
 
 enable_testing()
 
