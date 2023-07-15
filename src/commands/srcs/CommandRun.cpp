@@ -95,7 +95,6 @@ void CommandRun::run(Context ctx) {
                         File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(Object::ObjectType::File, relPath));
                         if (!changeDetector.check({repoFile, ctx.repo}, {p, from})) {
                             addFile(repoFile.id);
-                            ctx.repo->addToCache(repoFile);
                             progress.print("Skipped: " + relPath, 1);
                             runnerStats.filesSkipped++;
                             return;

@@ -43,9 +43,6 @@ public:
     Object::idType getObjectId(Object::ObjectType type, const std::string &key) const override;
     std::vector<std::pair<std::string, Object::idType>> getObjects(Object::ObjectType type) const override;
 
-    bool clearCache(Object::ObjectType type) override;
-    bool addToCache(const Object &obj) override;
-
     bool exists(Object::ObjectType type, const std::string &key) const override;
     Object::idType getId() override;
 

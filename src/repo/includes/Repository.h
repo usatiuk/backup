@@ -85,18 +85,7 @@ public:
     /// \return     True if exists, False otherwise
     /// \throws     Exception on any error
     virtual bool exists(Object::ObjectType type, const std::string &key) const = 0;
-
-    /// Erases all the cache entries of object type \p type
-    /// \param type Type of the objects
-    /// \return     True
-    virtual bool clearCache(Object::ObjectType type) = 0;
-
-    /// Adds the object to the cache, but doesn't change it on disk otherwise
-    /// \param obj  Constant reference to the object
-    /// \return     True
-    /// \throws     Exception on any error, or if the object doesn't exist
-    virtual bool addToCache(const Object &obj) = 0;
-
+    
     /// Returns the next available object id
     virtual Object::idType getId() = 0;
 

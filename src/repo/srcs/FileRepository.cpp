@@ -225,22 +225,3 @@ void FileRepository::OffsetEntry::serialize(std::vector<char> &out) const {
 
 FileRepository::OffsetEntry::OffsetEntry(unsigned long long int fileId, unsigned long long int offset, unsigned long long int length)
     : fileId(fileId), offset(offset), length(length) {}
-
-bool FileRepository::clearCache(Object::ObjectType type) {
-    keyIndex[type] = {};
-    return true;
-}
-
-bool FileRepository::addToCache(const Object &obj) {
-    {
-        std::unique_lock lock(repoLock);
-        if (offsetIndex.count(obj.id) == 0)
-            throw Exception("Object with id " + std::to_string(obj.id) + " doesn't exist!");
-    }
-    {
-        std::lock_guard lock(repoLock);
-        keyIndex[obj.type][obj.getKey()] = obj.id;
-    }
-
-    return true;
-}
