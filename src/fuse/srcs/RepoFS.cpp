@@ -105,10 +105,10 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset,
             size = len - offset;
 
         auto curchunk = entry->file->chunks.upper_bound(offset);
-        --curchunk;
-        if (curchunk == entry->file->chunks.end()) {
-            std::cerr << "OOOOOPS" << std::endl;
+        if (curchunk == entry->file->chunks.begin()) {
+            std::abort();
         }
+        --curchunk;
         size_t curInBuf = 0;
         size_t curInChunk = offset - curchunk->first;
         while (curInBuf < size) {
