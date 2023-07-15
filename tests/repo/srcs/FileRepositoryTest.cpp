@@ -10,11 +10,11 @@
 #include "objects/Chunk.h"
 
 TEST(FileRepository, Deserialize) {
-    Cleaner c({"testrepo"});
+    Cleaner c({"Deserizlize/testrepo"});
 
     {
         Config conf;
-        conf.add("repo", "testrepo");
+        conf.add("repo", "Deserizlize/testrepo");
         FileRepository repo(conf);
         repo.init();
         std::vector<char>
@@ -38,7 +38,7 @@ TEST(FileRepository, Deserialize) {
     }
     {
         Config conf;
-        conf.add("repo", "testrepo");
+        conf.add("repo", "Deserizlize/testrepo");
         FileRepository repo(conf);
         repo.open();
 
@@ -82,11 +82,11 @@ TEST(FileRepository, Deserialize) {
 }
 
 TEST(FileRepository, Filters) {
-    Cleaner c({"testrepo"});
+    Cleaner c({"Filters/testrepo"});
 
     {
         Config conf;
-        conf.add("repo", "testrepo")
+        conf.add("repo", "Filters/testrepo")
                 .add("compression", "shiftC")
                 .add("compression-level", "1")
                 .add("encryption", "shiftE")
@@ -114,7 +114,7 @@ TEST(FileRepository, Filters) {
     }
     {
         Config conf;
-        conf.add("repo", "testrepo")
+        conf.add("repo", "Filters/testrepo")
                 .add("compression", "shiftC")
                 .add("compression-level", "1")
                 .add("encryption", "shiftE")
@@ -152,7 +152,7 @@ TEST(FileRepository, Filters) {
     }
     {
         Config conf;
-        conf.add("repo", "testrepo")
+        conf.add("repo", "Filters/testrepo")
                 .add("compression", "shiftC")
                 .add("compression-level", "1")
                 .add("encryption", "shiftE")
@@ -204,10 +204,10 @@ TEST(FileRepository, Filters) {
 
 TEST(FileRepository, IDsDisabled) {
     GTEST_SKIP();
-    Cleaner c({"testrepo"});
+    Cleaner c({"IDS/testrepo"});
     {
         Config conf;
-        conf.add("repo", "testrepo");
+        conf.add("repo", "IDS/testrepo");
         FileRepository repo(conf);
         repo.init();
 
@@ -233,7 +233,7 @@ TEST(FileRepository, IDsDisabled) {
     }
     {
         Config conf;
-        conf.add("repo", "testrepo");
+        conf.add("repo", "IDS/testrepo");
         FileRepository repo(conf);
         repo.open();
         auto o1o = repo.getObject(1);
@@ -277,7 +277,7 @@ TEST(FileRepository, IDsDisabled) {
     }
     {
         Config conf;
-        conf.add("repo", "testrepo");
+        conf.add("repo", "IDS/testrepo");
         FileRepository repo(conf);
         repo.open();
 
