@@ -5,9 +5,9 @@
 #ifndef SEMBACKUP_CONTEXT_H
 #define SEMBACKUP_CONTEXT_H
 
-#include "../../repo/includes/Repository.h"
-#include "../../utils/includes/Config.h"
-#include "../../utils/includes/Logger.h"
+#include "Config.h"
+#include "Logger.h"
+#include "Repository.h"
 
 struct Context {
     Logger *logger;

@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../includes/Repository.h"
+#include "Repository.h"
 Repository::~Repository() = default;
 
 Repository::Repository(Config config) : config(std::move(config)) {}

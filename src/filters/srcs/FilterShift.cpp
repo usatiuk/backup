@@ -1,7 +1,7 @@
 //
 // Created by Stepan Usatiuk on 22.04.2023.
 //
-#include "../includes/FilterShift.h"
+#include "FilterShift.h"
 
 std::vector<char> FilterShift::filterWrite(std::vector<char> from) const {
     for (auto &c: from) c += shiftVal;

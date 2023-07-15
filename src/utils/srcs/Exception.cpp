@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 01.05.2023.
 //
 
-#include "../includes/Exception.h"
+#include "Exception.h"
 #include <execinfo.h>
 #include <sstream>
 

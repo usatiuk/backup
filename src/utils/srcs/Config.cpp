@@ -2,9 +2,9 @@
 // Created by Stepan Usatiuk on 01.05.2023.
 //
 
-#include "../includes/Config.h"
-#include "../../repo/includes/Serialize.h"
-#include "../includes/Exception.h"
+#include "Config.h"
+#include "Exception.h"
+#include "Serialize.h"
 #include <sstream>
 
 Config &Config::add(const std::string &k, const std::string &v) {

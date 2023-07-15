@@ -2,10 +2,10 @@
 // Created by Stepan Usatiuk on 26.04.2023.
 //
 
-#include "../includes/BuzhashChunker.h"
+#include "BuzhashChunker.h"
 
-#include "../../crypto/includes/SHA.h"
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
+#include "SHA.h"
 
 BuzhashChunker::BuzhashChunker(std::streambuf *buf, unsigned long long minBytes, unsigned long long maxBytes, unsigned long long mask, uint32_t window) : Chunker(buf, maxBytes), window(window), minBytes(minBytes), mask(mask), buzhash(window) {}
 

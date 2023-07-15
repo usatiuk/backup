@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 05.05.2023.
 //
 
-#include "../includes/RunningAverage.h"
+#include "RunningAverage.h"
 
 RunningAverage::RunningAverage(std::function<unsigned long long int()> getFunc, int max, int ms)
     : getFunc(std::move(getFunc)), max(max), ms(ms), thread(&RunningAverage::loop, this) {

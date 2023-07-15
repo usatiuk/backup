@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 26.04.2023.
 //
 
-#include "../includes/Buzhash.h"
+#include "Buzhash.h"
 
 Buzhash::Buzhash(uint32_t blockSize) : blockSize(blockSize), history() {}
 

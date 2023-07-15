@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 23.05.2023.
 //
 
-#include "../includes/CommandList.h"
+#include "CommandList.h"
 
 CommandList::CommandList() : Command() {
 }

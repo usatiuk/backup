@@ -3,13 +3,13 @@
 //
 
 
-#include "../includes/ComparableFile.h"
+#include "ComparableFile.h"
 
 #include <fstream>
 #include <sstream>
 
-#include "../../repo/includes/objects/FileBuffer.h"
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
+#include "objects/FileBuffer.h"
 
 ComparableFile::ComparableFile(const File &file, const Repository *repo)
     : path(file.name),

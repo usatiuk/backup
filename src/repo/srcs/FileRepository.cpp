@@ -2,16 +2,16 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../includes/FileRepository.h"
+#include "FileRepository.h"
 
 #include <exception>
 #include <iterator>
 #include <mutex>
 
-#include "../../filters/includes/CheckFilter.h"
-#include "../../filters/includes/FilterFactory.h"
-#include "../includes/Object.h"
-#include "../includes/Serialize.h"
+#include "CheckFilter.h"
+#include "FilterFactory.h"
+#include "Object.h"
+#include "Serialize.h"
 
 FileRepository::FileRepository(Config config) : Repository(std::move(config)), root(std::filesystem::path(this->config.getStr("repo"))), writeCacheMax(config.getInt("repo-target") * 1024 * 1024) {}
 

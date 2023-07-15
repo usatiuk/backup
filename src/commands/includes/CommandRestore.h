@@ -7,7 +7,7 @@
 
 #include "Command.h"
 
-#include "../../repo/includes/objects/File.h"
+#include "objects/File.h"
 
 #include "CommandsCommon.h"
 

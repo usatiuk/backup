@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 23.05.2023.
 //
 
-#include "../includes/Logger.h"
+#include "Logger.h"
 
 Logger::Logger(int level, std::ostream &out) : loglevel(level), out(out) {
 }

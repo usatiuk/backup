@@ -2,10 +2,10 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../../includes/objects/Archive.h"
+#include "objects/Archive.h"
 
-#include "../../../utils/includes/Exception.h"
-#include "../../includes/Serialize.h"
+#include "Exception.h"
+#include "Serialize.h"
 
 Archive::Archive(Object::idType id, std::string name, unsigned long long mtime, std::vector<idType> files)
     : Object(id, ObjectType::Archive), name(name), mtime(mtime), files(files) {}

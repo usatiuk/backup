@@ -4,4 +4,4 @@ add_library(change_detectors srcs/ChangeDetector.cpp srcs/ChangeDetectorContaine
 
 target_include_directories(change_detectors PUBLIC includes)
 
-target_link_libraries(change_detectors utils)
+target_link_libraries(change_detectors utils repo)

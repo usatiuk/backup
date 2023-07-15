@@ -2,15 +2,15 @@
 // Created by Stepan Usatiuk on 16.04.2023.
 //
 
-#include "../includes/ChangeDetectorFactory.h"
+#include "ChangeDetectorFactory.h"
 
 #include <vector>
 
-#include "../includes/ContentsChangeDetector.h"
-#include "../includes/EditTimeChangeDetector.h"
-#include "../includes/SizeChangeDetector.h"
-#include "../includes/TypeChangeDetector.h"
+#include "ContentsChangeDetector.h"
+#include "EditTimeChangeDetector.h"
 #include "Exception.h"
+#include "SizeChangeDetector.h"
+#include "TypeChangeDetector.h"
 
 std::unique_ptr<ChangeDetector> ChangeDetectorFactory::getChangeDetector(const std::string &type) {
     if (type == "etime") {

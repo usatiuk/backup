@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 
-#include "../../change_detectors/includes/ComparableFile.h"
+#include "ComparableFile.h"
 
 /// Utility class to compute difference between two ComparableFile%s
 class Diff {

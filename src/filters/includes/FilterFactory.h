@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 
-#include "../../utils/includes/Config.h"
+#include "Config.h"
 #include "Filter.h"
 
 /// Utility factory class for Filter%s

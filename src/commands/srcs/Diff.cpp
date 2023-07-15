@@ -2,12 +2,12 @@
 // Created by Stepan Usatiuk on 06.05.2023.
 //
 
-#include "../includes/Diff.h"
+#include "Diff.h"
 
-#include "../../chunkers/includes/BuzhashChunker.h"
-#include "../../utils/includes/BytesFormatter.h"
-#include "../../utils/includes/Exception.h"
-#include "../../utils/includes/Signals.h"
+#include "BuzhashChunker.h"
+#include "BytesFormatter.h"
+#include "Exception.h"
+#include "Signals.h"
 
 bool Diff::isBinary(const ComparableFile &c) {
     auto b = c.contents();

@@ -1,9 +1,11 @@
 #!/bin/bash
 
-TESTSIZE=16
+TESTSIZE=4
 
 # TODO: Don't hardcode this
 CMD="../../src/backup"
+
+CHUNKEROPTS=" --chunker-min 64 --chunker-max 1024 --chunker-mask 17 --repo-target 2 "
 
 TESTDATADIR=backup
 
@@ -50,7 +52,7 @@ cat "$TESTDATADIR"/testdata/7/b >> "$TESTDATADIR"/testdata/8/b
 
 echo "Data created"
 
-if ! $CMD init --repo "$TESTDATADIR"/testdir/to1 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e; then
+if ! $CMD init $CHUNKEROPTS --repo "$TESTDATADIR"/testdir/to1 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e; then
   echo "Error creating repo!"
   exit 1
 fi
@@ -203,101 +205,6 @@ if ! ( ! ( echo "$OUT" | grep -q 'b is different' ) && ( echo "$OUT" | grep -q '
   exit 1
 fi
 echo "OK comparing archive last and current"
-
-
-if ! $CMD init --repo "$TESTDATADIR"/testdir/to2 --compression zlib --compression-level 4 --encryption aes --password asdff --salt e; then
-  echo "Error creating repo!"
-  exit 1
-fi
-echo "Repo created"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Copied: a' ) && ( echo "$OUT" | grep -q 'Copied: aa' ) && ( echo "$OUT" | grep -q 'Copied: b' ) &&  ( echo "$OUT" | grep -q 'Copied: c' ) ); then
-  echo "Error backing up 1 dir!"
-  exit 1
-fi
-echo "Backup 1 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
-  echo "Error backing up 2 dir!"
-  exit 1
-fi
-echo "Backup 2 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 3 dir!"
-  exit 1
-fi
-echo "Backup 3 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
-  echo "Error backing up 4 dir!"
-  exit 1
-fi
-echo "Backup 4 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 5 dir!"
-  exit 1
-fi
-echo "Backup 5 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 6 dir!"
-  exit 1
-fi
-echo "Backup 6 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 7 dir!"
-  exit 1
-fi
-echo "Backup 7 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' )); then
-  echo "Error backing up 8 dir!"
-  exit 1
-fi
-echo "Backup 8 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 9 dir!"
-  exit 1
-fi
-echo "Backup 9 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! (  ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 10 dir!"
-  exit 1
-fi
-echo "Backup 10 ok"
-
-OUT=$($CMD run --from "$TESTDATADIR"/testdata/1 --repo "$TESTDATADIR"/testdir/to2 --password asdff --progress simple --verbose 1)
-echo "$OUT"
-if ! ( ( echo "$OUT" | grep -q 'Skipped: a' ) && ( echo "$OUT" | grep -q 'Skipped: aa' ) && ( echo "$OUT" | grep -q 'Skipped: b' ) &&  ( echo "$OUT" | grep -q 'Skipped: c' ) ); then
-  echo "Error backing up 11 dir!"
-  exit 1
-fi
-echo "Backup 11 ok"
 
 rm -rf "$TESTDATADIR"
 

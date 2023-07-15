@@ -2,10 +2,10 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../../includes/objects/Chunk.h"
+#include "objects/Chunk.h"
 
-#include "../../../utils/includes/Exception.h"
-#include "../../includes/Serialize.h"
+#include "Exception.h"
+#include "Serialize.h"
 
 Chunk::Chunk(idType id, std::string SHA, std::vector<char> data) : Object(id, ObjectType::Chunk), data(std::move(data)), SHA(std::move(SHA)), length(this->data.size()) {}
 

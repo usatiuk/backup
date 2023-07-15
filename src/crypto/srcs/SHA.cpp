@@ -2,9 +2,9 @@
 // Created by Stepan Usatiuk on 15.04.2023.
 //
 
-#include "../includes/SHA.h"
+#include "SHA.h"
 
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
 
 std::string SHA::calculate(const std::vector<char> &in) {
     SHA hasher;

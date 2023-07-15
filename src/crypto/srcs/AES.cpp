@@ -2,13 +2,13 @@
 // Created by Stepan Usatiuk on 30.04.2023.
 //
 
-#include "../includes/AES.h"
+#include "AES.h"
 
 #include <openssl/aes.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
 
 std::vector<char> AES::encrypt(const std::vector<char> &in, const std::string &password, const std::string &salt) {
     return AES::encrypt(in, AES::deriveKey(password, salt));

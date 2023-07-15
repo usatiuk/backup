@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../includes/Cleaner.h"
+#include "Cleaner.h"
 
 Cleaner::Cleaner(std::vector<std::filesystem::path> toClean) : toClean(std::move(toClean)) {
     for (const auto &p: this->toClean) {

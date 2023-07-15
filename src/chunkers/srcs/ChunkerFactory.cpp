@@ -2,11 +2,11 @@
 // Created by Stepan Usatiuk on 30.04.2023.
 //
 
-#include "../includes/ChunkerFactory.h"
+#include "ChunkerFactory.h"
 
-#include "../../utils/includes/Exception.h"
-#include "../includes/BuzhashChunker.h"
-#include "../includes/ConstChunker.h"
+#include "BuzhashChunker.h"
+#include "ConstChunker.h"
+#include "Exception.h"
 
 std::unique_ptr<Chunker> ChunkerFactory::getChunker(const Config &config, std::streambuf *buf) {
     if (config.getStr("chunker") == "const") {

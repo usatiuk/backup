@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 22.04.2023.
 //
 
-#include "../includes/FilterContainer.h"
+#include "FilterContainer.h"
 
 FilterContainer::FilterContainer() = default;
 

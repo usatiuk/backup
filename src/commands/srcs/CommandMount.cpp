@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 07.06.2023.
 //
 
-#include "../includes/CommandMount.h"
+#include "CommandMount.h"
 #include "RepoFS.h"
 
 CommandMount::CommandMount() : Command() {

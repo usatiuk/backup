@@ -2,14 +2,14 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../../includes/objects/File.h"
+#include "objects/File.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../../../utils/includes/Exception.h"
-#include "../../includes/Serialize.h"
+#include "Exception.h"
+#include "Serialize.h"
 
 File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::map<size_t, idType> chunks, Type fileType)
     : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), SHA(SHA), fileType(fileType), chunks(std::move(chunks)) {}

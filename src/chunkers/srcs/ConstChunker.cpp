@@ -2,10 +2,10 @@
 // Created by Stepan Usatiuk on 15.04.2023.
 //
 
-#include "../includes/ConstChunker.h"
+#include "ConstChunker.h"
 
-#include "../../crypto/includes/SHA.h"
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
+#include "SHA.h"
 
 ConstChunker::ConstChunker(std::streambuf *buf, unsigned long long maxBytes) : Chunker(buf, maxBytes) {}
 

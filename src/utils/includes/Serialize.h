@@ -20,7 +20,7 @@
 #include <endian.h>
 #endif
 
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
 
 /// Serialization library
 /**

@@ -2,21 +2,21 @@
 // Created by Stepan Usatiuk on 23.05.2023.
 //
 
-#include "../includes/CommandRestore.h"
+#include "CommandRestore.h"
 
 #include <fstream>
 #include <sstream>
 
-#include "../../chunkers/includes/ChunkerFactory.h"
-#include "../../repo/includes/Serialize.h"
-#include "../../repo/includes/objects/Archive.h"
-#include "../../repo/includes/objects/Chunk.h"
-#include "../../utils/includes/BytesFormatter.h"
-#include "../../utils/includes/Exception.h"
-#include "../../utils/includes/Progress.h"
-#include "../../utils/includes/RunningDiffAverage.h"
-#include "../../utils/includes/Signals.h"
-#include "../../utils/includes/ThreadPool.h"
+#include "BytesFormatter.h"
+#include "ChunkerFactory.h"
+#include "Exception.h"
+#include "Progress.h"
+#include "RunningDiffAverage.h"
+#include "Serialize.h"
+#include "Signals.h"
+#include "ThreadPool.h"
+#include "objects/Archive.h"
+#include "objects/Chunk.h"
 
 using namespace CommandsCommon;
 

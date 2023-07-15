@@ -2,9 +2,9 @@
 // Created by Stepan Usatiuk on 14.04.2023.
 //
 
-#include "../includes/Object.h"
+#include "Object.h"
 
-#include "../includes/Serialize.h"
+#include "Serialize.h"
 
 Object::Object(idType id, ObjectType type) : id(id), type(type) {}
 

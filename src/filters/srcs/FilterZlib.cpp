@@ -2,11 +2,11 @@
 // Created by Stepan Usatiuk on 23.04.2023.
 //
 
-#include "../includes/FilterZlib.h"
+#include "FilterZlib.h"
 
 #include <zlib.h>
 
-#include "../../repo/includes/Serialize.h"
+#include "Serialize.h"
 
 std::vector<char> FilterZlib::filterWrite(std::vector<char> from) const {
     uLongf outSize = compressBound(from.size());

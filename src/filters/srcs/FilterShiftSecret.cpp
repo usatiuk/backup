@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 23.04.2023.
 //
 
-#include "../includes/FilterShiftSecret.h"
+#include "FilterShiftSecret.h"
 
 #include <string>
 

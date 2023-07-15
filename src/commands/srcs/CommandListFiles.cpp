@@ -2,13 +2,13 @@
 // Created by Stepan Usatiuk on 23.05.2023.
 //
 
-#include "../includes/CommandListFiles.h"
+#include "CommandListFiles.h"
 
-#include "../../repo/includes/Serialize.h"
-#include "../../repo/includes/objects/Archive.h"
-#include "../../repo/includes/objects/Chunk.h"
-#include "../../repo/includes/objects/File.h"
-#include "../../utils/includes/BytesFormatter.h"
+#include "BytesFormatter.h"
+#include "Serialize.h"
+#include "objects/Archive.h"
+#include "objects/Chunk.h"
+#include "objects/File.h"
 
 CommandListFiles::CommandListFiles() : Command() {
 }

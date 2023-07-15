@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 12.05.2023.
 //
 
-#include "../includes/RunningDiffAverage.h"
+#include "RunningDiffAverage.h"
 
 RunningDiffAverage::RunningDiffAverage(std::function<unsigned long long int()> getFunc, int max, int ms)
     : runningAverage(

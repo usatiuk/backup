@@ -2,9 +2,9 @@
 // Created by Stepan Usatiuk on 15.04.2023.
 //
 
-#include "../includes/Chunker.h"
+#include "Chunker.h"
 
-#include "../../utils/includes/Exception.h"
+#include "Exception.h"
 
 Chunker::Chunker(std::streambuf *buf, unsigned long long maxBytes) : buf(buf), maxBytes(maxBytes) {}
 

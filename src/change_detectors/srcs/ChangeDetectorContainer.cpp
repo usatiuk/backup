@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 04.05.2023.
 //
 
-#include "../includes/ChangeDetectorContainer.h"
+#include "ChangeDetectorContainer.h"
 
 #include <functional>
 

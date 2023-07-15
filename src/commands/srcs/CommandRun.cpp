@@ -2,27 +2,27 @@
 // Created by Stepan Usatiuk on 23.05.2023.
 //
 
-#include "../includes/CommandRun.h"
+#include "CommandRun.h"
 
 #include <fstream>
 #include <iomanip>
 #include <sstream>
 
-#include "../../change_detectors/includes/ChangeDetectorFactory.h"
-#include "../../chunkers/includes/ChunkerFactory.h"
-#include "../../crypto/includes/SHA.h"
-#include "../../repo/includes/Serialize.h"
-#include "../../repo/includes/objects/Archive.h"
-#include "../../repo/includes/objects/Chunk.h"
-#include "../../repo/includes/objects/File.h"
-#include "../../utils/includes/BytesFormatter.h"
-#include "../../utils/includes/Exception.h"
-#include "../../utils/includes/Progress.h"
-#include "../../utils/includes/RunningDiffAverage.h"
-#include "../../utils/includes/Signals.h"
-#include "../../utils/includes/ThreadPool.h"
+#include "BytesFormatter.h"
+#include "ChangeDetectorFactory.h"
+#include "ChunkerFactory.h"
+#include "Exception.h"
+#include "Progress.h"
+#include "RunningDiffAverage.h"
+#include "SHA.h"
+#include "Serialize.h"
+#include "Signals.h"
+#include "ThreadPool.h"
+#include "objects/Archive.h"
+#include "objects/Chunk.h"
+#include "objects/File.h"
 
-#include "../includes/CommandsCommon.h"
+#include "CommandsCommon.h"
 
 using namespace CommandsCommon;
 

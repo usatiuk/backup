@@ -9,8 +9,8 @@
 #include <functional>
 #include <streambuf>
 
-#include "../../repo/includes/Repository.h"
-#include "../../repo/includes/objects/File.h"
+#include "Repository.h"
+#include "objects/File.h"
 
 /// Helper class to allow comparing files from different sources
 /**

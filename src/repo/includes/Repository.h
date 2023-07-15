@@ -9,8 +9,8 @@
 #include <mutex>
 #include <set>
 
-#include "../../filters/includes/FilterContainer.h"
-#include "../../utils/includes/Config.h"
+#include "Config.h"
+#include "FilterContainer.h"
 #include "Object.h"
 
 /// Abstract base class for an Object Repository

@@ -2,7 +2,7 @@
 // Created by Stepan Usatiuk on 05.05.2023.
 //
 
-#include "../includes/ContentsChangeDetector.h"
+#include "ContentsChangeDetector.h"
 
 #include <iterator>
 

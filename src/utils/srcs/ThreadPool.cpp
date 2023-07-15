@@ -1,7 +1,7 @@
 #include <string>
 
-#include "../includes/Signals.h"
-#include "../includes/ThreadPool.h"
+#include "Signals.h"
+#include "ThreadPool.h"
 
 ThreadPool::ThreadPool(std::function<void(std::string)> onError, std::size_t workersNum) : onError(std::move(onError)) {
     for (int i = 0; i < workersNum; i++) threads.emplace_back(&ThreadPool::loop, this);

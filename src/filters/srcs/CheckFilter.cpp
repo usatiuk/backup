@@ -2,9 +2,9 @@
 // Created by Stepan Usatiuk on 12.05.2023.
 //
 
-#include "../includes/CheckFilter.h"
-#include "../../crypto/includes/CRC32.h"
-#include "../../repo/includes/Serialize.h"
+#include "CheckFilter.h"
+#include "CRC32.h"
+#include "Serialize.h"
 
 std::vector<char> CheckFilter::filterWrite(std::vector<char> from) const {
     return filterWriteStatic(std::move(from));

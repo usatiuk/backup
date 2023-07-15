@@ -2,9 +2,9 @@
 // Created by Stepan Usatiuk on 23.04.2023.
 //
 
-#include "../includes/FilterAES.h"
+#include "FilterAES.h"
 
-#include "../../crypto/includes/AES.h"
+#include "AES.h"
 
 std::vector<char> FilterAES::filterWrite(std::vector<char> from) const {
     return AES::encrypt(from, key);

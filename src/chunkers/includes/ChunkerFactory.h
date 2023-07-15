@@ -8,8 +8,8 @@
 #include <memory>
 #include <streambuf>
 
-#include "../../utils/includes/Config.h"
 #include "Chunker.h"
+#include "Config.h"
 
 /// Factory for Chunker%s
 class ChunkerFactory {

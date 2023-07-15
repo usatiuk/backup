@@ -2,13 +2,13 @@
 // Created by Stepan Usatiuk on 23.05.2023.
 //
 
-#include "../includes/CommandsCommon.h"
+#include "CommandsCommon.h"
 
 #include <fstream>
 #include <regex>
 
-#include "../../utils/includes/Exception.h"
-#include "../../utils/includes/Signals.h"
+#include "Exception.h"
+#include "Signals.h"
 
 void CommandsCommon::workerCallback(unsigned long long int bytesWritten, unsigned long long int bytesSkipped, unsigned long long int filesWritten, WorkerStats &to) {
     to.bytesWritten += bytesWritten;
