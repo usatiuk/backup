@@ -54,7 +54,9 @@ std::vector<char> File::getFileContents(const std::filesystem::path &p) {
     }
     if (type == Type::Symlink) {
         auto target = std::filesystem::read_symlink(p).u8string();
-        return {target.begin(), target.end()};
+        std::vector<char> target_null_term = {target.begin(), target.end()};
+        target_null_term.emplace_back('\0');
+        return target_null_term;
     }
     throw Exception("Error with file " + p.u8string());
 }
