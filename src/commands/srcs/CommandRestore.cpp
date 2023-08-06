@@ -20,8 +20,7 @@
 
 using namespace CommandsCommon;
 
-CommandRestore::CommandRestore() : Command() {
-}
+CommandRestore::CommandRestore() : Command() {}
 
 void CommandRestore::run(Context ctx) {
     Object::idType archive = ctx.repo->getConfig().getInt("aid");
@@ -33,14 +32,14 @@ void CommandRestore::run(Context ctx) {
     WorkerStats workerStats;///< Backup statistics of the worker threads
 
     /// Worker callback, bound to the local workerStats variable
-    workerStatsFunction workerCallback = [&workerStats](unsigned long long bytesWritten, unsigned long long bytesSkipped, unsigned long long filesWritten) {
+    workerStatsFunction workerCallback = [&workerStats](unsigned long long bytesWritten,
+                                                        unsigned long long bytesSkipped,
+                                                        unsigned long long filesWritten) {
         CommandsCommon::workerCallback(bytesWritten, bytesSkipped, filesWritten, workerStats);
     };
     {
         /// Calculate the average speed of backup
-        RunningDiffAverage avg(
-                [&]() { return workerStats.bytesWritten.load(); },
-                100, 100);
+        RunningDiffAverage avg([&]() { return workerStats.bytesWritten.load(); }, 100, 100);
 
         /// Show restore progress
         Progress progress([this, ctx](const std::string &s, int l) { ctx.logger->write(s, l); },
@@ -49,7 +48,10 @@ void CommandRestore::run(Context ctx) {
                                   "/",
                                   [&filesToRestoreCount]() { return std::to_string(filesToRestoreCount); },
                                   " files saved, ",
-                                  [&workerStats]() { return BytesFormatter::formatStr(workerStats.bytesWritten.load() + workerStats.bytesSkipped.load()); },
+                                  [&workerStats]() {
+                                      return BytesFormatter::formatStr(workerStats.bytesWritten.load() +
+                                                                       workerStats.bytesSkipped.load());
+                                  },
                                   " / ",
                                   [&bytesToRestore]() { return BytesFormatter::formatStr(bytesToRestore); },
                                   " saved @ ",
@@ -59,10 +61,9 @@ void CommandRestore::run(Context ctx) {
                           ctx.repo->getConfig());
 
         /// Thread pool for restore tasks
-        ThreadPool threadPool([&](const std::string &error) {
-            progress.print("Error: " + error, 0);
-        },
-                              ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads") : std::thread::hardware_concurrency());
+        ThreadPool threadPool([&](const std::string &error) { progress.print("Error: " + error, 0); },
+                              ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads")
+                                                                      : std::thread::hardware_concurrency());
 
         /// Add the main restore task
         threadPool.push([&, this]() {
@@ -92,7 +93,8 @@ void CommandRestore::run(Context ctx) {
     ctx.logger->write("\n", 1);
 }
 
-std::string CommandRestore::backupRestoreFile(const File &file, const std::filesystem::path &baseDir, workerStatsFunction &callback, Context ctx) {
+std::string CommandRestore::backupRestoreFile(const File &file, const std::filesystem::path &baseDir,
+                                              workerStatsFunction &callback, Context ctx) {
     auto fullpath = baseDir / std::filesystem::u8path(file.name);
 
     std::filesystem::create_directories(fullpath.parent_path());
@@ -104,7 +106,8 @@ std::string CommandRestore::backupRestoreFile(const File &file, const std::files
     }
     if (file.fileType == File::Type::Symlink) {
         auto dest = Serialize::deserialize<Chunk>(ctx.repo->getObject(file.chunks.at(0)));
-        std::filesystem::create_symlink(std::filesystem::u8path(std::string{dest.data.begin(), dest.data.end()}), fullpath);
+        std::filesystem::create_symlink(std::filesystem::u8path(std::string{dest.data.begin(), dest.data.end()}),
+                                        fullpath);
         callback(0, 0, 1);
         return fullpath.u8string();
     }

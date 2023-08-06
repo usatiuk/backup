@@ -18,7 +18,9 @@ namespace CommandsCommon {
     /// \param ignore       List of files to ignore
     /// \param spawner      Function to spawn other tasks
     /// \param processFile  Task to spawn on found files
-    void processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore, const std::function<void(std::function<void()>)> &spawner, std::function<void(std::filesystem::directory_entry)> processFile);
+    void processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore,
+                              const std::function<void(std::function<void()>)> &spawner,
+                              std::function<void(std::filesystem::directory_entry)> processFile);
 
     struct WorkerStats {
     public:
@@ -40,7 +42,8 @@ namespace CommandsCommon {
     /// \return       True if \p p contains \p prefix at its prefix, False otherwise
     bool isSubpath(const std::filesystem::path &prefix, const std::filesystem::path &p);
 
-    void workerCallback(unsigned long long bytesWritten, unsigned long long bytesSkipped, unsigned long long filesWritten, WorkerStats &to);
+    void workerCallback(unsigned long long bytesWritten, unsigned long long bytesSkipped,
+                        unsigned long long filesWritten, WorkerStats &to);
 
 };// namespace CommandsCommon
 

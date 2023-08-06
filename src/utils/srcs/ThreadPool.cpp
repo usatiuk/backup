@@ -10,9 +10,7 @@ ThreadPool::ThreadPool(std::function<void(std::string)> onError, std::size_t wor
 ThreadPool::~ThreadPool() {
     stop = true;
     somethingNew.notify_all();
-    for (auto &t: threads) {
-        t.join();
-    }
+    for (auto &t: threads) { t.join(); }
 }
 
 void ThreadPool::push(std::function<void()> &&func) {
@@ -48,9 +46,7 @@ void ThreadPool::loop() {
 
         try {
             task();
-        } catch (std::exception &e) {
-            onError(std::string(e.what()));
-        }
+        } catch (std::exception &e) { onError(std::string(e.what())); }
 
         {
             std::lock_guard qLock(queueLock);

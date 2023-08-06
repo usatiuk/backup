@@ -85,7 +85,7 @@ public:
     /// \return     True if exists, False otherwise
     /// \throws     Exception on any error
     virtual bool exists(Object::ObjectType type, const std::string &key) const = 0;
-    
+
     /// Returns the next available object id
     virtual Object::idType getId() = 0;
 

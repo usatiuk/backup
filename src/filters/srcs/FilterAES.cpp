@@ -6,12 +6,8 @@
 
 #include "AES.h"
 
-std::vector<char> FilterAES::filterWrite(std::vector<char> from) const {
-    return AES::encrypt(from, key);
-}
+std::vector<char> FilterAES::filterWrite(std::vector<char> from) const { return AES::encrypt(from, key); }
 
-std::vector<char> FilterAES::filterRead(std::vector<char> from) const {
-    return AES::decrypt(from, key);
-}
+std::vector<char> FilterAES::filterRead(std::vector<char> from) const { return AES::decrypt(from, key); }
 
 FilterAES::FilterAES(const std::string &password, const std::string &salt) : key(AES::deriveKey(password, salt)) {}

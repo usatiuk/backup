@@ -12,8 +12,6 @@ bool ContentsChangeDetector::check(const ComparableFile &f1, const ComparableFil
     auto b1 = f1.contents();
     auto b2 = f2.contents();
 
-    return !std::equal(std::istreambuf_iterator<char>(b1.get()),
-                       std::istreambuf_iterator<char>(),
-                       std::istreambuf_iterator<char>(b2.get()),
-                       std::istreambuf_iterator<char>());
+    return !std::equal(std::istreambuf_iterator<char>(b1.get()), std::istreambuf_iterator<char>(),
+                       std::istreambuf_iterator<char>(b2.get()), std::istreambuf_iterator<char>());
 }

@@ -32,11 +32,12 @@ struct ComparableFile {
     /// \param base Constant reference to a base path against which #path will be set
     ComparableFile(const std::filesystem::path &p, const std::filesystem::path &base);
 
-    const std::string path;                                         ///< Relative path to the file
-    const File::Type type;                                          ///< File type
-    const unsigned long long bytes;                                 ///< Number of bytes in the file
-    const unsigned long long mtime;                                 ///< Timestamp of last file modification
-    const std::function<std::unique_ptr<std::streambuf>()> contents;///< Function that returns a unique pointer to a std::streambuf instance linked to the contents of the file
+    const std::string path;        ///< Relative path to the file
+    const File::Type type;         ///< File type
+    const unsigned long long bytes;///< Number of bytes in the file
+    const unsigned long long mtime;///< Timestamp of last file modification
+    const std::function<std::unique_ptr<std::streambuf>()>
+            contents;///< Function that returns a unique pointer to a std::streambuf instance linked to the contents of the file
 };
 
 

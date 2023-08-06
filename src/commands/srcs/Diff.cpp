@@ -51,13 +51,9 @@ std::string Diff::diff(const ComparableFile &c1, const ComparableFile &c2) {
     }
 
     out << "\nLines only in first file: " << std::endl;
-    for (const auto &s: f1lines) {
-        out << s.second << "<" << s.first << std::endl;
-    }
+    for (const auto &s: f1lines) { out << s.second << "<" << s.first << std::endl; }
     out << "Lines only in second file: " << std::endl;
-    for (const auto &s: f2diff) {
-        out << s.second << ">" << s.first << std::endl;
-    }
+    for (const auto &s: f2diff) { out << s.second << ">" << s.first << std::endl; }
     out << "^^^\n";
     return out.str();
 }
@@ -92,12 +88,8 @@ std::string Diff::diffPercent(const ComparableFile &c1, const ComparableFile &c2
 
     unsigned long long diff = 0;
 
-    for (const auto &c: ch1hashes) {
-        diff += hashsize[c];
-    }
-    for (const auto &c: ch2diff) {
-        diff += hashsize[c];
-    }
+    for (const auto &c: ch1hashes) { diff += hashsize[c]; }
+    for (const auto &c: ch2diff) { diff += hashsize[c]; }
 
     return "at most " + BytesFormatter::formatStr(diff);
 }

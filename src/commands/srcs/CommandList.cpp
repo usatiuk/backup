@@ -4,13 +4,10 @@
 
 #include "CommandList.h"
 
-CommandList::CommandList() : Command() {
-}
+CommandList::CommandList() : Command() {}
 
 void CommandList::run(Context ctx) {
     auto list = ctx.repo->getObjects(Object::ObjectType::Archive);
     std::sort(list.begin(), list.end(), [](const auto &l, const auto &r) { return l.second < r.second; });
-    for (auto const &aid: list) {
-        std::cout << "Name: " << aid.first << " Id: " << aid.second << std::endl;
-    }
+    for (auto const &aid: list) { std::cout << "Name: " << aid.first << " Id: " << aid.second << std::endl; }
 }

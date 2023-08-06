@@ -40,7 +40,8 @@ namespace Serialize {
     struct is_pair : std::false_type {};
 
     template<typename P>
-    struct is_pair<P, std::void_t<decltype(std::declval<P>().first)>, std::void_t<decltype(std::declval<P>().second)>> : std::true_type {};
+    struct is_pair<P, std::void_t<decltype(std::declval<P>().first)>, std::void_t<decltype(std::declval<P>().second)>>
+        : std::true_type {};
 
     template<typename, typename, typename = void>
     struct has_emplace_back : std::false_type {};
@@ -104,22 +105,19 @@ namespace Serialize {
         } else if constexpr (std::is_enum<T>::value) {
             // If the object is an enum, deserialize an int and cast it to the enum
             auto tmp = deserialize<uint32_t>(in, end);
-            if (tmp >= 0 && tmp < static_cast<uint32_t>(T::END))
-                return static_cast<T>(tmp);
+            if (tmp >= 0 && tmp < static_cast<uint32_t>(T::END)) return static_cast<T>(tmp);
             else
                 throw Exception("Enum out of range!");
         } else if constexpr (sizeof(T) == 1) {
             // If it's a single byte, just copy it
-            if (std::distance(in, end) < sizeof(T))
-                throw Exception("Unexpected end of object!");
+            if (std::distance(in, end) < sizeof(T)) throw Exception("Unexpected end of object!");
             return *(in++);
         } else if constexpr (std::is_integral<T>::value) {
             uint64_t tmp;
             static_assert(sizeof(tmp) == 8);
 
             // If the object is a number, copy it byte-by-byte
-            if (std::distance(in, end) < sizeof(tmp))
-                throw Exception("Unexpected end of object!");
+            if (std::distance(in, end) < sizeof(tmp)) throw Exception("Unexpected end of object!");
 
             std::copy(in, in + sizeof(tmp), reinterpret_cast<char *>(&tmp));
             in += sizeof(tmp);
@@ -134,8 +132,7 @@ namespace Serialize {
             T out;
             if constexpr (sizeof(typename T::value_type) == 1) {
                 // Optimization for char vectors
-                if (std::distance(in, end) < size)
-                    throw Exception("Unexpected end of object!");
+                if (std::distance(in, end) < size) throw Exception("Unexpected end of object!");
                 out.insert(out.end(), in, in + size);
                 in += size;
             } else
@@ -143,8 +140,7 @@ namespace Serialize {
                     using V = typename T::value_type;
                     V v = deserialize<V>(in, end);
                     // Try either emplace_back or emplace if it doesn't exist
-                    if constexpr (has_emplace_back<T, V>::value)
-                        out.emplace_back(std::move(v));
+                    if constexpr (has_emplace_back<T, V>::value) out.emplace_back(std::move(v));
                     else
                         out.emplace(std::move(v));
                 }
@@ -175,7 +171,8 @@ namespace Serialize {
             // If the object is a number, copy it byte-by-byte
             uint64_t tmp = htobe64(static_cast<uint64_t>(what));
             static_assert(sizeof(tmp) == 8);
-            out.insert(out.end(), (reinterpret_cast<const char *>(&tmp)), (reinterpret_cast<const char *>(&tmp) + sizeof(tmp)));
+            out.insert(out.end(), (reinterpret_cast<const char *>(&tmp)),
+                       (reinterpret_cast<const char *>(&tmp) + sizeof(tmp)));
         } else {
             // Otherwise we treat it as a container, in format of <number of elements>b<elements>e
             serialize(what.size(), out);
@@ -184,9 +181,7 @@ namespace Serialize {
                 // Optimization for char vectors
                 out.insert(out.end(), what.begin(), what.end());
             } else
-                for (auto const &i: what) {
-                    serialize(i, out);
-                }
+                for (auto const &i: what) { serialize(i, out); }
             serialize('e', out);
         }
     }

@@ -64,11 +64,7 @@ public:
 
     using serializable = std::true_type;
 
-    enum class KeyType {
-        STRING,
-        INT,
-        LIST
-    };
+    enum class KeyType { STRING, INT, LIST };
 
     /// Struct to record key options
     struct keyopts {
@@ -79,7 +75,9 @@ public:
     };
 
     /// Used for printing help
-    const static inline std::unordered_map<KeyType, std::string> KeyTypeToStr{{KeyType::STRING, "string"}, {KeyType::INT, "number"}, {KeyType::LIST, "comma-separated list"}};
+    const static inline std::unordered_map<KeyType, std::string> KeyTypeToStr{{KeyType::STRING, "string"},
+                                                                              {KeyType::INT, "number"},
+                                                                              {KeyType::LIST, "comma-separated list"}};
 
     /// Default values and their metadata
     const static inline std::unordered_map<std::string, keyopts> keys{
@@ -98,7 +96,9 @@ public:
             {"chunker", {"buzhash", KeyType::STRING, true, "Chunker to use (const, buzhash)"}},
             {"chunker-min", {"256", KeyType::INT, true, "Min chunk size in KB"}},
             {"chunker-max", {"4096", KeyType::INT, true, "Max chunk size in KB"}},
-            {"chunker-mask", {"20", KeyType::INT, true, "Chunker hash bit mask (mask of n bits results in average chunk size of 2^n bytes)"}},
+            {"chunker-mask",
+             {"20", KeyType::INT, true,
+              "Chunker hash bit mask (mask of n bits results in average chunk size of 2^n bytes)"}},
             {"repo-target", {"128", KeyType::INT, true, "Target size of files for FileRepository"}},
             {"progress", {"pretty", KeyType::STRING, false, "How to print progress (simple, pretty, none)"}},
             {"verbose", {"1", KeyType::INT, false, "Message verbosity (0 - error, 1 - info, -1 - quiet)"}},

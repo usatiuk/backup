@@ -12,9 +12,6 @@ RunningDiffAverage::RunningDiffAverage(std::function<unsigned long long int()> g
                   prev = cur;
                   return calc;
               },
-              max, ms) {
-}
+              max, ms) {}
 
-unsigned long long RunningDiffAverage::get() {
-    return runningAverage.get();
-}
+unsigned long long RunningDiffAverage::get() { return runningAverage.get(); }

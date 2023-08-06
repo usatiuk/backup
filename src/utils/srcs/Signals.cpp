@@ -3,10 +3,6 @@
 //
 #include "Signals.h"
 
-void Signals::setup() {
-    signal(SIGINT, handle);
-}
+void Signals::setup() { signal(SIGINT, handle); }
 
-void Signals::handle(int signum) {
-    shouldQuit = true;
-}
+void Signals::handle(int signum) { shouldQuit = true; }

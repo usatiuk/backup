@@ -13,11 +13,11 @@
 #include "Object.h"
 #include "Serialize.h"
 
-FileRepository::FileRepository(Config config) : Repository(std::move(config)), root(std::filesystem::path(this->config.getStr("repo"))), writeCacheMax(config.getInt("repo-target") * 1024 * 1024) {}
+FileRepository::FileRepository(Config config)
+    : Repository(std::move(config)), root(std::filesystem::path(this->config.getStr("repo"))),
+      writeCacheMax(config.getInt("repo-target") * 1024 * 1024) {}
 
-bool FileRepository::exists() {
-    return std::filesystem::is_directory(root) && std::filesystem::exists(root / "info");
-}
+bool FileRepository::exists() { return std::filesystem::is_directory(root) && std::filesystem::exists(root / "info"); }
 
 bool FileRepository::flush() {
     flushWriteCache(std::unique_lock(writeCacheLock));
@@ -31,14 +31,20 @@ bool FileRepository::open() {
     std::swap(config, readConf);
     config.merge(readConf);
 
-    if (config.getStr("compression") != "none") filters.addFilter(FilterFactory::makeFilter(config.getStr("compression"), config));
-    if (config.getStr("encryption") != "none") filters.addFilter(FilterFactory::makeFilter(config.getStr("encryption"), config));
+    if (config.getStr("compression") != "none")
+        filters.addFilter(FilterFactory::makeFilter(config.getStr("compression"), config));
+    if (config.getStr("encryption") != "none")
+        filters.addFilter(FilterFactory::makeFilter(config.getStr("encryption"), config));
     filters.addFilter(FilterFactory::makeFilter("crc", config));
 
     ready = true;
     try {
-        std::tie(maxFileId, offsetIndex) = Serialize::deserialize<std::pair<decltype(maxFileId), decltype(offsetIndex)>>(filters.filterRead(readFile(root / "offsets")));
-        std::tie(keyIndex, largestUnusedId) = Serialize::deserialize<std::pair<decltype(keyIndex), decltype(largestUnusedId)>>(filters.filterRead(readFile(root / "index")));
+        std::tie(maxFileId, offsetIndex) =
+                Serialize::deserialize<std::pair<decltype(maxFileId), decltype(offsetIndex)>>(
+                        filters.filterRead(readFile(root / "offsets")));
+        std::tie(keyIndex, largestUnusedId) =
+                Serialize::deserialize<std::pair<decltype(keyIndex), decltype(largestUnusedId)>>(
+                        filters.filterRead(readFile(root / "index")));
     } catch (const std::exception &e) {
         ready = false;
         throw;
@@ -56,8 +62,10 @@ bool FileRepository::init() {
 
     writeFile(root / "info", CheckFilter::filterWriteStatic(Serialize::serialize(config)));
 
-    if (config.getStr("compression") != "none") filters.addFilter(FilterFactory::makeFilter(config.getStr("compression"), config));
-    if (config.getStr("encryption") != "none") filters.addFilter(FilterFactory::makeFilter(config.getStr("encryption"), config));
+    if (config.getStr("compression") != "none")
+        filters.addFilter(FilterFactory::makeFilter(config.getStr("compression"), config));
+    if (config.getStr("encryption") != "none")
+        filters.addFilter(FilterFactory::makeFilter(config.getStr("encryption"), config));
     filters.addFilter(FilterFactory::makeFilter("crc", config));
 
     ready = true;
@@ -78,8 +86,7 @@ std::vector<char> FileRepository::getObject(Object::idType id) const {
     if (!ready) throw Exception("Tried working with uninitialized repo!");
 
     std::unique_lock lock(repoLock);
-    if (offsetIndex.count(id) == 0)
-        throw Exception("Object with id " + std::to_string(id) + " doesn't exist!");
+    if (offsetIndex.count(id) == 0) throw Exception("Object with id " + std::to_string(id) + " doesn't exist!");
     auto entry = offsetIndex.at(id);
     lock.unlock();
 
@@ -95,9 +102,7 @@ bool FileRepository::writeObject(const Object &obj) {
         writeCache[obj.id] = std::move(tmp);
 
         // If we have reached the target file size, flush the cache
-        if (writeCacheSize >= writeCacheMax) {
-            flushWriteCache(std::move(lockW));
-        }
+        if (writeCacheSize >= writeCacheMax) { flushWriteCache(std::move(lockW)); }
     }
     return true;
 }
@@ -149,17 +154,19 @@ bool FileRepository::deleteObject(const Object &obj) {
     throw Exception("Deletion not implemented!");
 }
 
-std::vector<char> FileRepository::readFile(const std::filesystem::path &file, unsigned long long offset, unsigned long long size) const {
-    if (size > absoluteMaxFileLimit) throw Exception("Tried to read " + std::to_string(size) +
-                                                     " bytes from " + file.u8string() +
-                                                     " which is more than absoluteMaxFileLimit");
+std::vector<char> FileRepository::readFile(const std::filesystem::path &file, unsigned long long offset,
+                                           unsigned long long size) const {
+    if (size > absoluteMaxFileLimit)
+        throw Exception("Tried to read " + std::to_string(size) + " bytes from " + file.u8string() +
+                        " which is more than absoluteMaxFileLimit");
 
     std::ifstream ifstream(file, std::ios::binary | std::ios::in);
     if (!ifstream.is_open()) throw Exception("Can't open file " + file.u8string() + " for reading!");
 
     std::vector<char> buf(size);
 
-    if (ifstream.rdbuf()->pubseekpos(offset) == std::streampos(std::streamoff(-1))) throw Exception("Unexpected end of file " + file.u8string());
+    if (ifstream.rdbuf()->pubseekpos(offset) == std::streampos(std::streamoff(-1)))
+        throw Exception("Unexpected end of file " + file.u8string());
     if (ifstream.rdbuf()->sgetn(buf.data(), size) != size) throw Exception("Unexpected end of file " + file.u8string());
 
     return buf;
@@ -195,8 +202,7 @@ std::vector<std::pair<std::string, Object::idType>> FileRepository::getObjects(O
     std::lock_guard lock(repoLock);
     std::vector<std::pair<std::string, Object::idType>> out;
     if (keyIndex.count(type) == 0) return {};
-    for (auto const &i: keyIndex.at(type))
-        out.emplace_back(i);
+    for (auto const &i: keyIndex.at(type)) out.emplace_back(i);
     return out;
 }
 
@@ -211,11 +217,11 @@ Object::idType FileRepository::getId() {
     return largestUnusedId++;
 }
 
-FileRepository::OffsetEntry::OffsetEntry(std::vector<char, std::allocator<char>>::const_iterator &in, const std::vector<char, std::allocator<char>>::const_iterator &end)
+FileRepository::OffsetEntry::OffsetEntry(std::vector<char, std::allocator<char>>::const_iterator &in,
+                                         const std::vector<char, std::allocator<char>>::const_iterator &end)
     : fileId(Serialize::deserialize<decltype(fileId)>(in, end)),
       offset(Serialize::deserialize<decltype(offset)>(in, end)),
-      length(Serialize::deserialize<decltype(length)>(in, end)) {
-}
+      length(Serialize::deserialize<decltype(length)>(in, end)) {}
 
 void FileRepository::OffsetEntry::serialize(std::vector<char> &out) const {
     Serialize::serialize(fileId, out);
@@ -223,5 +229,6 @@ void FileRepository::OffsetEntry::serialize(std::vector<char> &out) const {
     Serialize::serialize(length, out);
 }
 
-FileRepository::OffsetEntry::OffsetEntry(unsigned long long int fileId, unsigned long long int offset, unsigned long long int length)
+FileRepository::OffsetEntry::OffsetEntry(unsigned long long int fileId, unsigned long long int offset,
+                                         unsigned long long int length)
     : fileId(fileId), offset(offset), length(length) {}

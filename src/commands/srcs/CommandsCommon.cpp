@@ -10,7 +10,8 @@
 #include "Exception.h"
 #include "Signals.h"
 
-void CommandsCommon::workerCallback(unsigned long long int bytesWritten, unsigned long long int bytesSkipped, unsigned long long int filesWritten, WorkerStats &to) {
+void CommandsCommon::workerCallback(unsigned long long int bytesWritten, unsigned long long int bytesSkipped,
+                                    unsigned long long int filesWritten, WorkerStats &to) {
     to.bytesWritten += bytesWritten;
     to.bytesSkipped += bytesSkipped;
     to.filesWritten += filesWritten;
@@ -23,7 +24,9 @@ bool CommandsCommon::isSubpath(const std::filesystem::path &prefix, const std::f
     return true;
 }
 
-void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore, const std::function<void(std::function<void()>)> &spawner, std::function<void(std::filesystem::directory_entry)> processFile) {
+void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore,
+                                          const std::function<void(std::function<void()>)> &spawner,
+                                          std::function<void(std::filesystem::directory_entry)> processFile) {
     if (!std::filesystem::is_directory(dir)) throw Exception(dir.u8string() + " is not a directory!");
 
     /// Don't process the directory if it has a ".nobackup" file
@@ -33,9 +36,7 @@ void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std:
     if (std::filesystem::exists(dir / ".ignore")) {
         std::ifstream ignorefile(dir / ".ignore", std::ios::in);
         std::string line;
-        while (std::getline(ignorefile, line)) {
-            ignore.emplace_back(line);
-        }
+        while (std::getline(ignorefile, line)) { ignore.emplace_back(line); }
     }
 
     /// For each directory entry...
@@ -48,7 +49,8 @@ void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std:
                 std::smatch m;
                 auto s = dirEntry.path().filename().u8string();
                 return std::regex_match(s, m, std::regex(pred));
-            })) continue;
+            }))
+            continue;
 
         /// If it's a directory, spawn a task to process the entries in it
         if (!dirEntry.is_symlink() && dirEntry.is_directory()) {
@@ -60,8 +62,6 @@ void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std:
         }
 
         /// Spawn a task to process each individual file
-        spawner([processFile, dirEntry]() {
-            processFile(dirEntry);
-        });
+        spawner([processFile, dirEntry]() { processFile(dirEntry); });
     }
 }

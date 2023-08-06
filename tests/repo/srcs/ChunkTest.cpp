@@ -36,19 +36,11 @@ TEST(Chunk, Deserialize) {
 
         EXPECT_EQ(o1.data.size(), o1e.data.size());
         EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) {
-            EXPECT_EQ(o1.data[i], o1e.data[i]);
-        }
-        for (int i = 0; i < o2.data.size(); i++) {
-            EXPECT_EQ(o2.data[i], o2e.data[i]);
-        }
+        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
 
-        for (int i = 0; i < o1.SHA.size(); i++) {
-            EXPECT_EQ(o1.SHA[i], o1e.SHA[i]);
-        }
-        for (int i = 0; i < o2.SHA.size(); i++) {
-            EXPECT_EQ(o2.SHA[i], o2e.SHA[i]);
-        }
+        for (int i = 0; i < o1.SHA.size(); i++) { EXPECT_EQ(o1.SHA[i], o1e.SHA[i]); }
+        for (int i = 0; i < o2.SHA.size(); i++) { EXPECT_EQ(o2.SHA[i], o2e.SHA[i]); }
     }
 }
 
@@ -57,9 +49,7 @@ TEST(Chunk, Garbage) {
     auto eb = e.cbegin();
     try {
         Chunk o1(eb, e.cend());
-    } catch (...) {
-        return;
-    }
+    } catch (...) { return; }
     FAIL() << "Object constructed with garbage data!";
 }
 
@@ -68,9 +58,7 @@ TEST(Chunk, Garbage2) {
     auto eb = e.cbegin();
     try {
         Chunk o1(eb, e.cend());
-    } catch (...) {
-        return;
-    }
+    } catch (...) { return; }
     FAIL() << "Object constructed with garbage data!";
 }
 
@@ -93,16 +81,13 @@ TEST(Chunk, Garbage3) {
         try {
             Chunk o1 = Serialize::deserialize<Chunk>(s1);
             fail = true;
-        } catch (...) {
-        }
+        } catch (...) {}
 
         try {
             Chunk o2 = Serialize::deserialize<Chunk>(s2);
             fail = true;
-        } catch (...) {
-        }
+        } catch (...) {}
 
-        if (fail)
-            FAIL() << "Object constructed with garbage data!";
+        if (fail) FAIL() << "Object constructed with garbage data!";
     }
 }

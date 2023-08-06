@@ -11,8 +11,7 @@ Archive::Archive(Object::idType id, std::string name, unsigned long long mtime, 
     : Object(id, ObjectType::Archive), name(name), mtime(mtime), files(files) {}
 
 Archive::Archive(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end)
-    : Object(in, end),
-      name(Serialize::deserialize<std::string>(in, end)),
+    : Object(in, end), name(Serialize::deserialize<std::string>(in, end)),
       mtime(Serialize::deserialize<unsigned long long>(in, end)),
       files(Serialize::deserialize<std::remove_const<decltype(files)>::type>(in, end)) {
     if (type != ObjectType::Archive) throw Exception("Type mismatch for Archive!");
@@ -28,6 +27,4 @@ void Archive::serialize(std::vector<char> &out) const {
     Serialize::serialize(files.size(), out);
 }
 
-std::string Archive::getKey() const {
-    return name;
-}
+std::string Archive::getKey() const { return name; }

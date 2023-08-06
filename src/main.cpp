@@ -36,8 +36,7 @@ Config getConf(int argc, char *argv[]) {
 int help() {
     for (auto const &o: Config::keys) {
         std::cout << "--" << o.first << " <" << Config::KeyTypeToStr.at(o.second.type) << ">" << std::endl;
-        if (o.second.defaultval.has_value())
-            std::cout << "  Default: " << o.second.defaultval.value() << std::endl;
+        if (o.second.defaultval.has_value()) std::cout << "  Default: " << o.second.defaultval.value() << std::endl;
         std::cout << "  Is saved in repository: " << (o.second.remember ? "yes" : "no") << std::endl;
         std::cout << "  Info: " << o.second.info << std::endl;
     }
@@ -80,23 +79,18 @@ int main(int argc, char *argv[]) {
         }
 
         std::string opt = argv[1];
-        if (opt == "help") {
-            return help();
-        }
+        if (opt == "help") { return help(); }
 
         Config conf;
 
         try {
             conf = getConf(argc - 2, argv + 2);
         } catch (std::exception &e) {
-            std::cerr << "Error reading config!" << std::endl
-                      << e.what() << std::endl;
+            std::cerr << "Error reading config!" << std::endl << e.what() << std::endl;
             return -1;
         }
 
-        if (opt == "init") {
-            return init(conf);
-        }
+        if (opt == "init") { return init(conf); }
 
         auto repo = openRepo(conf);
 
@@ -122,10 +116,7 @@ int main(int argc, char *argv[]) {
         } else {
             commands.at(opt)->run(ctx);
         }
-    } catch (std::exception &e) {
-        std::cerr << "Error!" << std::endl
-                  << e.what() << std::endl;
-    } catch (...) {
+    } catch (std::exception &e) { std::cerr << "Error!" << std::endl << e.what() << std::endl; } catch (...) {
         std::cerr << "Something very bad happened!" << std::endl;
     }
 }

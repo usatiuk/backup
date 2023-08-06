@@ -26,8 +26,7 @@
 
 using namespace CommandsCommon;
 
-CommandRun::CommandRun() : Command() {
-}
+CommandRun::CommandRun() : Command() {}
 
 void CommandRun::run(Context ctx) {
     WorkerStats workerStats;///< Backup statistics of the worker threads
@@ -36,49 +35,48 @@ void CommandRun::run(Context ctx) {
     std::filesystem::path from = ctx.repo->getConfig().getStr("from");///< Directory to back up from
 
     /// Worker callback, bound to the local workerStats variable
-    workerStatsFunction workerCallback = [&](unsigned long long bytesWritten, unsigned long long bytesSkipped, unsigned long long filesWritten) {
+    workerStatsFunction workerCallback = [&](unsigned long long bytesWritten, unsigned long long bytesSkipped,
+                                             unsigned long long filesWritten) {
         CommandsCommon::workerCallback(bytesWritten, bytesSkipped, filesWritten, workerStats);
     };
 
     std::vector<Object::idType> files;///< File ids so far added to the archive
     std::mutex filesLock;             ///< Files vector lock
     /// Function to safely add new file ids to `files`
-    std::function addFile = [&](Object::idType id) {std::lock_guard lock(filesLock); files.emplace_back(id); };
+    std::function addFile = [&](Object::idType id) {
+        std::lock_guard lock(filesLock);
+        files.emplace_back(id);
+    };
 
     {
         /// Calculate the average speed of backup
-        RunningDiffAverage avg(
-                [&]() { return workerStats.bytesWritten.load(); },
-                100, 100);
+        RunningDiffAverage avg([&]() { return workerStats.bytesWritten.load(); }, 100, 100);
 
         /// Show the progress of backup
         Progress progress([this, ctx](const std::string &s, int l) { ctx.logger->write(s, l); },
-                          {[&]() { return std::to_string(workerStats.filesWritten.load()); },
-                           "/",
-                           [&]() { return std::to_string(runnerStats.filesToSaveCount); },
-                           " files saved, ",
-                           [&]() { return std::to_string(runnerStats.filesSkipped); },
-                           " files skipped, ",
-                           [&]() { return BytesFormatter::formatStr((workerStats.bytesWritten.load() + workerStats.bytesSkipped.load())); },
-                           " / ",
-                           [&]() { return BytesFormatter::formatStr(runnerStats.bytesToSave); },
-                           " read @ ",
-                           [&]() { return BytesFormatter::formatStr(avg.get() * 10); },
-                           "/s"},
+                          {[&]() { return std::to_string(workerStats.filesWritten.load()); }, "/",
+                           [&]() { return std::to_string(runnerStats.filesToSaveCount); }, " files saved, ",
+                           [&]() { return std::to_string(runnerStats.filesSkipped); }, " files skipped, ",
+                           [&]() {
+                               return BytesFormatter::formatStr(
+                                       (workerStats.bytesWritten.load() + workerStats.bytesSkipped.load()));
+                           },
+                           " / ", [&]() { return BytesFormatter::formatStr(runnerStats.bytesToSave); }, " read @ ",
+                           [&]() { return BytesFormatter::formatStr(avg.get() * 10); }, "/s"},
                           ctx.repo->getConfig());
 
         /// Thread pool for backup tasks, prints to progress on any errors
-        ThreadPool threadPool([&](const std::string &error) {
-            progress.print("Error: " + error, 0);
-        },
-                              ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads") : std::thread::hardware_concurrency());
+        ThreadPool threadPool([&](const std::string &error) { progress.print("Error: " + error, 0); },
+                              ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads")
+                                                                      : std::thread::hardware_concurrency());
 
         /// Container of ChangeDetectors built using the config of the repository
         ChangeDetectorContainer changeDetector = ChangeDetectorFactory::getChangeDetectors(ctx.repo->getConfig());
 
         /// Function to spawn a rechunking task
         auto saveFile = [&, this](const std::filesystem::path &absPath, const std::filesystem::path &relPath) {
-            runnerStats.bytesToSave += File::getFileType(absPath) == File::Type::Normal ? std::filesystem::file_size(absPath) : 0;
+            runnerStats.bytesToSave +=
+                    File::getFileType(absPath) == File::Type::Normal ? std::filesystem::file_size(absPath) : 0;
             runnerStats.filesToSaveCount++;
             threadPool.push([&, relPath, absPath]() {
                 addFile(backupChunkFile(absPath, relPath.u8string(), workerCallback, ctx));
@@ -87,31 +85,27 @@ void CommandRun::run(Context ctx) {
         };
 
         /// Task to process an individual file in the backup
-        std::function<void(std::filesystem::path)> processFile =
-                [&, this](const std::filesystem::path &p) {
-                    auto relPath = p.lexically_relative(from).u8string();
+        std::function<void(std::filesystem::path)> processFile = [&, this](const std::filesystem::path &p) {
+            auto relPath = p.lexically_relative(from).u8string();
 
-                    if (ctx.repo->exists(Object::ObjectType::File, relPath) != 0) {
-                        File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(Object::ObjectType::File, relPath));
-                        if (!changeDetector.check({repoFile, ctx.repo}, {p, from})) {
-                            addFile(repoFile.id);
-                            progress.print("Skipped: " + relPath, 1);
-                            runnerStats.filesSkipped++;
-                            return;
-                        }
-                    }
-
-                    saveFile(p, relPath);
+            if (ctx.repo->exists(Object::ObjectType::File, relPath) != 0) {
+                File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(Object::ObjectType::File, relPath));
+                if (!changeDetector.check({repoFile, ctx.repo}, {p, from})) {
+                    addFile(repoFile.id);
+                    progress.print("Skipped: " + relPath, 1);
+                    runnerStats.filesSkipped++;
                     return;
-                };
+                }
+            }
+
+            saveFile(p, relPath);
+            return;
+        };
 
         /// Start the backup with the root directory and empty ignore list
         threadPool.push([&]() {
             processDirWithIgnore(
-                    from,
-                    {},
-                    [&](std::function<void()> f) { threadPool.push(std::move(f)); },
-                    processFile);
+                    from, {}, [&](std::function<void()> f) { threadPool.push(std::move(f)); }, processFile);
         });
 
         /// Wait for all the tasks to finish
@@ -137,19 +131,20 @@ void CommandRun::run(Context ctx) {
     ctx.repo->putObject(a);
 }
 
-Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, const std::string &saveAs, workerStatsFunction &callback, Context ctx) {
+Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, const std::string &saveAs,
+                                           workerStatsFunction &callback, Context ctx) {
     /// If it's a symlink or directory, treat it specially
     /// The order of checks is important, because is_directory follows the symlink
     if (std::filesystem::is_symlink(orig) || std::filesystem::is_directory(orig)) {
         auto contents = File::getFileContents(orig);
         Chunk c(ctx.repo->getId(), SHA::calculate(contents), contents);
-        File f(ctx.repo->getId(), saveAs, c.length, File::getFileMtime(orig), c.SHA, {{0, c.id}}, File::getFileType(orig));
+        File f(ctx.repo->getId(), saveAs, c.length, File::getFileMtime(orig), c.SHA, {{0, c.id}},
+               File::getFileType(orig));
         ctx.repo->putObject(c);
         ctx.repo->putObject(f);
         return f.id;
     }
-    if (!std::filesystem::is_regular_file(orig))
-        throw Exception(orig.u8string() + "is a special file, not saving");
+    if (!std::filesystem::is_regular_file(orig)) throw Exception(orig.u8string() + "is a special file, not saving");
 
     std::ifstream ifstream(orig, std::ios::in | std::ios::binary);
     if (!ifstream) throw Exception("Couldn't open " + orig.u8string() + " for reading");
@@ -186,7 +181,8 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
     if (size != File::getFileSize(orig)) {
         throw Exception("Something really bad happened or file " + orig.u8string() + " changed during backup");
     }
-    File f(ctx.repo->getId(), saveAs, size, File::getFileMtime(orig), fileHash.getHash(), fileChunks, File::getFileType(orig));
+    File f(ctx.repo->getId(), saveAs, size, File::getFileMtime(orig), fileHash.getHash(), fileChunks,
+           File::getFileType(orig));
     ctx.repo->putObject(f);
     callback(0, 0, 1);
 

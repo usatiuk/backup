@@ -17,8 +17,7 @@ TEST(FileRepository, Deserialize) {
         conf.add("repo", "Deserizlize/testrepo");
         FileRepository repo(conf);
         repo.init();
-        std::vector<char>
-                data1{'a', 'b', 'c', 'e'};
+        std::vector<char> data1{'a', 'b', 'c', 'e'};
 
         std::string o1k(16, '\0');
         std::string o2k(16, '\0');
@@ -72,12 +71,8 @@ TEST(FileRepository, Deserialize) {
         auto o2ed = o2e.data;
         EXPECT_EQ(o1.data.size(), o1e.data.size());
         EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) {
-            EXPECT_EQ(o1.data[i], o1e.data[i]);
-        }
-        for (int i = 0; i < o2.data.size(); i++) {
-            EXPECT_EQ(o2.data[i], o2e.data[i]);
-        }
+        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
     }
 }
 
@@ -99,8 +94,7 @@ TEST(FileRepository, Filters) {
         std::string o2k(16, '\0');
         o2k[0] = 1;
         o2k[1] = 2;
-        std::vector<char>
-                data1{'a', 'b', 'c', 'e'};
+        std::vector<char> data1{'a', 'b', 'c', 'e'};
         Chunk o1(666, o1k, data1);
         std::vector<char> data2{'q', 'w', 'e', 'r', 'b'};
         Chunk o2(777, o2k, data2);
@@ -147,8 +141,7 @@ TEST(FileRepository, Filters) {
             err = true;
         } catch (...) {}
 
-        if (err)
-            throw Exception("Object constructed with garbage data!");
+        if (err) throw Exception("Object constructed with garbage data!");
     }
     {
         Config conf;
@@ -193,12 +186,8 @@ TEST(FileRepository, Filters) {
         auto o2ed = o2e.data;
         EXPECT_EQ(o1.data.size(), o1e.data.size());
         EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) {
-            EXPECT_EQ(o1.data[i], o1e.data[i]);
-        }
-        for (int i = 0; i < o2.data.size(); i++) {
-            EXPECT_EQ(o2.data[i], o2e.data[i]);
-        }
+        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
     }
 }
 
@@ -215,8 +204,7 @@ TEST(FileRepository, IDsDisabled) {
         std::string o2k(16, '\0');
         o2k[0] = 1;
 
-        std::vector<char>
-                data1{'a', 'b', 'c', 'e'};
+        std::vector<char> data1{'a', 'b', 'c', 'e'};
         Chunk o1(repo.getId(), o1k, data1);
         std::vector<char> data2{'q', 'w', 'e', 'r', 'b'};
         Chunk o2(repo.getId(), o2k, data2);
@@ -261,12 +249,8 @@ TEST(FileRepository, IDsDisabled) {
         auto o2ed = o2e.data;
         EXPECT_EQ(o1.data.size(), o1e.data.size());
         EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) {
-            EXPECT_EQ(o1.data[i], o1e.data[i]);
-        }
-        for (int i = 0; i < o2.data.size(); i++) {
-            EXPECT_EQ(o2.data[i], o2e.data[i]);
-        }
+        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
 
 
         EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 1);
@@ -287,8 +271,7 @@ TEST(FileRepository, IDsDisabled) {
 
         auto id = repo.getId();
         EXPECT_EQ(id, 1);
-        std::vector<char>
-                data1{'a', 'b', 'c', 'e'};
+        std::vector<char> data1{'a', 'b', 'c', 'e'};
         Chunk o1(id, o2k, data1);
         EXPECT_EQ(repo.getId(), 3);
     }

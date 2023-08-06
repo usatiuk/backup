@@ -7,7 +7,9 @@
 #include "Exception.h"
 #include "SHA.h"
 
-BuzhashChunker::BuzhashChunker(std::streambuf *buf, unsigned long long minBytes, unsigned long long maxBytes, unsigned long long mask, uint32_t window) : Chunker(buf, maxBytes), window(window), minBytes(minBytes), mask(mask), buzhash(window) {}
+BuzhashChunker::BuzhashChunker(std::streambuf *buf, unsigned long long minBytes, unsigned long long maxBytes,
+                               unsigned long long mask, uint32_t window)
+    : Chunker(buf, maxBytes), window(window), minBytes(minBytes), mask(mask), buzhash(window) {}
 
 std::pair<std::string, std::vector<char>> BuzhashChunker::getNext() {
     if (eof) throw Exception("Trying to read from a file that is finished!");
@@ -21,9 +23,7 @@ std::pair<std::string, std::vector<char>> BuzhashChunker::getNext() {
         return {SHA::calculate(rbuf), rbuf};
     }
 
-    for (auto c: rbuf) {
-        buzhash.feed(static_cast<uint8_t>(c));
-    }
+    for (auto c: rbuf) { buzhash.feed(static_cast<uint8_t>(c)); }
 
     // Continue reading the file until either the last mask bits are zero of we exceed the maxSize
     while (((buzhash.get() & (~0UL >> (sizeof(unsigned long long) * 8 - mask))) != 0) && rbuf.size() < maxBytes) {

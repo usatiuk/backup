@@ -18,7 +18,8 @@ public:
     /// \param minBytes Minimum amount of bytes in returned chunks
     /// \param mask     Amount of trailing zeroes in the rolling hash at which the file is cut (results in average chunk size of 2^mask bytes)
     /// \param window   Rolling hash window (how many of chunks last bytes are included in the hash, the default is recommended)
-    BuzhashChunker(std::streambuf *buf, unsigned long long minBytes, unsigned long long maxBytes, unsigned long long mask, uint32_t window = 4095);
+    BuzhashChunker(std::streambuf *buf, unsigned long long minBytes, unsigned long long maxBytes,
+                   unsigned long long mask, uint32_t window = 4095);
 
     /// \copydoc Chunker::getNext
     std::pair<std::string, std::vector<char>> getNext() override;

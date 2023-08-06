@@ -72,7 +72,8 @@ private:
     /// \param size   Amount of bytes to read (no more than absoluteMaxFileLimit)
     /// \return       Vector of bytes of the file
     /// \throws       Exception on any error, or when absoluteMaxFileLimit is reached
-    std::vector<char> readFile(const std::filesystem::path &file, unsigned long long offset, unsigned long long size) const;
+    std::vector<char> readFile(const std::filesystem::path &file, unsigned long long offset,
+                               unsigned long long size) const;
     static constexpr unsigned long long absoluteMaxFileLimit{4ULL * 1024 * 1024 * 1024};///<Max file read size (4GB)
 
     /// Writes \p data to \p file
@@ -107,15 +108,17 @@ private:
     std::mutex writeCacheLock;                             ///< Write cache lock
     std::map<Object::idType, std::vector<char>> writeCache;///< Write cache, map of Object ids and their serialized data
     unsigned long long writeCacheSize = 0;                 ///< Current byte size of the write cache
-    const unsigned long long writeCacheMax;                ///< Target size of the write cache, it is automatically flushed after this is reached
+    const unsigned long long
+            writeCacheMax;///< Target size of the write cache, it is automatically flushed after this is reached
 
     /// Flushes the write cache
     /// Takes the cache lock, swaps the cache with an empty one and unlocks it
     /// \param lockW Write cache lock
     void flushWriteCache(std::unique_lock<std::mutex> &&lockW);
 
-    Object::idType largestUnusedId = 1;                                                              ///< Largest available objectID
-    std::unordered_map<Object::ObjectType, std::unordered_map<std::string, Object::idType>> keyIndex;///< Maps Object%'s keys to their ID's
+    Object::idType largestUnusedId = 1;///< Largest available objectID
+    std::unordered_map<Object::ObjectType, std::unordered_map<std::string, Object::idType>>
+            keyIndex;///< Maps Object%'s keys to their ID's
 };
 
 

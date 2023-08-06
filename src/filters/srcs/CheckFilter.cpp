@@ -6,13 +6,9 @@
 #include "CRC32.h"
 #include "Serialize.h"
 
-std::vector<char> CheckFilter::filterWrite(std::vector<char> from) const {
-    return filterWriteStatic(std::move(from));
-}
+std::vector<char> CheckFilter::filterWrite(std::vector<char> from) const { return filterWriteStatic(std::move(from)); }
 
-std::vector<char> CheckFilter::filterRead(std::vector<char> from) const {
-    return filterReadStatic(std::move(from));
-}
+std::vector<char> CheckFilter::filterRead(std::vector<char> from) const { return filterReadStatic(std::move(from)); }
 
 std::vector<char> CheckFilter::filterWriteStatic(std::vector<char> from) {
     auto out = magic;

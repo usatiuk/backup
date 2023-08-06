@@ -6,13 +6,12 @@
 
 #include "Serialize.h"
 
-FileBuffer::FileBuffer(const Repository *repo, Object::idType fileId) : repo(repo), file(Serialize::deserialize<File>(repo->getObject(fileId))), chunksQueue() {
+FileBuffer::FileBuffer(const Repository *repo, Object::idType fileId)
+    : repo(repo), file(Serialize::deserialize<File>(repo->getObject(fileId))), chunksQueue() {
     for (auto const &id: file.chunks) chunksQueue.emplace(id.second);
 };
 
-int FileBuffer::sync() {
-    return 0;
-}
+int FileBuffer::sync() { return 0; }
 
 std::streamsize FileBuffer::xsgetn(char *s, std::streamsize countr) {
     if (underflow() == std::char_traits<char>::eof()) return 0;
@@ -28,8 +27,7 @@ std::streamsize FileBuffer::xsgetn(char *s, std::streamsize countr) {
 
 int FileBuffer::uflow() {
     auto out = underflow();
-    if (out != traits_type::eof())
-        curGetBufPos++;
+    if (out != traits_type::eof()) curGetBufPos++;
     return out;
 }
 
@@ -44,8 +42,7 @@ int FileBuffer::underflow() {
         }
     }
 
-    if (!getBuf.empty())
-        return traits_type::to_int_type(getBuf[curGetBufPos]);
+    if (!getBuf.empty()) return traits_type::to_int_type(getBuf[curGetBufPos]);
     else
         return traits_type::eof();
 }

@@ -7,6 +7,4 @@ Repository::~Repository() = default;
 
 Repository::Repository(Config config) : config(std::move(config)) {}
 
-const Config &Repository::getConfig() const {
-    return config;
-}
+const Config &Repository::getConfig() const { return config; }

@@ -17,12 +17,7 @@ class Object {
 public:
     using idType = uint64_t;///< Type alias for Object%'s ID
 
-    enum class ObjectType {
-        Archive,
-        File,
-        Chunk,
-        END
-    };
+    enum class ObjectType { Archive, File, Chunk, END };
 
     /// Serializes the object to \p out
     virtual void serialize(std::vector<char> &out) const;

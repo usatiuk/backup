@@ -30,9 +30,10 @@ public:
     uint32_t feed(uint8_t in);
 
 private:
-    uint32_t cur = 0;            ///< Current hash value
-    const uint32_t blockSize;    ///< Hashing window size
-    std::deque<uint32_t> history;///< Bytes used to calculate current hash, used to compute the hash in a rolling fashion (to remove the oldest byte from the hash when blockSize is reached)
+    uint32_t cur = 0;        ///< Current hash value
+    const uint32_t blockSize;///< Hashing window size
+    std::deque<uint32_t>
+            history;///< Bytes used to calculate current hash, used to compute the hash in a rolling fashion (to remove the oldest byte from the hash when blockSize is reached)
 
     // Circular shift taken from: https://en.wikipedia.org/wiki/Circular_shift
     /// Shift \p value \p count bits to the right circularly

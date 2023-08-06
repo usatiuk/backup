@@ -41,7 +41,8 @@ public:
     std::string getHash();
 
 private:
-    const std::unique_ptr<EVP_MD_CTX, decltype(&EVP_MD_CTX_free)> mdctx{EVP_MD_CTX_new(), &EVP_MD_CTX_free};///< Current hashing context
+    const std::unique_ptr<EVP_MD_CTX, decltype(&EVP_MD_CTX_free)> mdctx{EVP_MD_CTX_new(),
+                                                                        &EVP_MD_CTX_free};///< Current hashing context
 };
 
 

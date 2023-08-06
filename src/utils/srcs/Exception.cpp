@@ -23,8 +23,7 @@ std::string Exception::getStacktrace() {
 
     if (strings != nullptr) {
         out << "Stacktrace:" << std::endl;
-        for (int i = 0; i < n; i++)
-            out << strings[i] << std::endl;
+        for (int i = 0; i < n; i++) out << strings[i] << std::endl;
     }
 
     free(strings);

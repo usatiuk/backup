@@ -11,12 +11,13 @@
 #include "Exception.h"
 #include "Serialize.h"
 
-File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::map<size_t, idType> chunks, Type fileType)
-    : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), SHA(SHA), fileType(fileType), chunks(std::move(chunks)) {}
+File::File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA,
+           std::map<size_t, idType> chunks, Type fileType)
+    : Object(id, ObjectType::File), name(name), bytes(bytes), mtime(mtime), SHA(SHA), fileType(fileType),
+      chunks(std::move(chunks)) {}
 
 File::File(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end)
-    : Object(in, end),
-      name(Serialize::deserialize<std::string>(in, end)),
+    : Object(in, end), name(Serialize::deserialize<std::string>(in, end)),
       bytes(Serialize::deserialize<unsigned long long>(in, end)),
       mtime(Serialize::deserialize<unsigned long long>(in, end)),
       SHA(Serialize::deserialize<std::remove_const<decltype(SHA)>::type>(in, end)),
@@ -35,9 +36,7 @@ void File::serialize(std::vector<char> &out) const {
     Serialize::serialize(chunks, out);
 }
 
-std::string File::getKey() const {
-    return name;
-}
+std::string File::getKey() const { return name; }
 
 File::Type File::getFileType(const std::filesystem::path &p) {
     if (std::filesystem::is_symlink(p)) return Type::Symlink;
@@ -49,9 +48,7 @@ File::Type File::getFileType(const std::filesystem::path &p) {
 std::vector<char> File::getFileContents(const std::filesystem::path &p) {
     auto type = getFileType(p);
     if (type == Type::Normal) throw Exception(p.u8string() + " is a normal file!");
-    if (type == Type::Directory) {
-        return {};
-    }
+    if (type == Type::Directory) { return {}; }
     if (type == Type::Symlink) {
         auto target = std::filesystem::read_symlink(p).u8string();
         std::vector<char> target_null_term = {target.begin(), target.end()};
@@ -64,7 +61,9 @@ std::vector<char> File::getFileContents(const std::filesystem::path &p) {
 unsigned long long File::getFileMtime(const std::filesystem::path &p) {
     auto type = getFileType(p);
     if (type == Type::Normal || type == Type::Directory)
-        return static_cast<const unsigned long long int>(std::chrono::duration_cast<std::chrono::seconds>(std::filesystem::last_write_time(p).time_since_epoch()).count());
+        return static_cast<const unsigned long long int>(
+                std::chrono::duration_cast<std::chrono::seconds>(std::filesystem::last_write_time(p).time_since_epoch())
+                        .count());
     else if (type == Type::Symlink) {
         auto path = p.u8string();
         struct stat sb;

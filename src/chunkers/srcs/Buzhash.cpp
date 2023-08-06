@@ -6,9 +6,7 @@
 
 Buzhash::Buzhash(uint32_t blockSize) : blockSize(blockSize), history() {}
 
-uint32_t Buzhash::get() const {
-    return cur;
-}
+uint32_t Buzhash::get() const { return cur; }
 
 uint32_t Buzhash::feed(uint8_t in) {
     cur = rotr32(cur, 1);

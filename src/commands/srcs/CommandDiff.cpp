@@ -27,15 +27,16 @@ void CommandDiff::run(Context ctx) {
     Object::idType archive1;
     if (!ctx.repo->getConfig().exists("aid")) {
         auto archives = ctx.repo->getObjects(Object::ObjectType::Archive);
-        archive1 = std::max_element(archives.begin(), archives.end(), [](const auto &a1, const auto &a2) { return a1.second < a2.second; })->second;
+        archive1 = std::max_element(archives.begin(), archives.end(), [](const auto &a1, const auto &a2) {
+                       return a1.second < a2.second;
+                   })->second;
     } else {
         archive1 = ctx.repo->getConfig().getInt("aid");
     }
 
-    ThreadPool threadPool([&](const std::string &error) {
-        ctx.logger->write("Error: " + error, 0);
-    },
-                          ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads") : std::thread::hardware_concurrency());
+    ThreadPool threadPool([&](const std::string &error) { ctx.logger->write("Error: " + error, 0); },
+                          ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads")
+                                                                  : std::thread::hardware_concurrency());
 
     auto archiveO1 = Serialize::deserialize<Archive>(ctx.repo->getObject(archive1));
     std::mutex filesLock;
@@ -43,8 +44,7 @@ void CommandDiff::run(Context ctx) {
     for (auto id: archiveO1.files) {
         auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
         auto path = std::filesystem::u8path(file.name);
-        if (isSubpath(ctx.repo->getConfig().getStr("prefix"), path))
-            files.emplace(file.getKey(), std::move(file));
+        if (isSubpath(ctx.repo->getConfig().getStr("prefix"), path)) files.emplace(file.getKey(), std::move(file));
     }
 
     /// Container of ChangeDetectors built using the config of the repository
@@ -63,8 +63,7 @@ void CommandDiff::run(Context ctx) {
             if (changeDetector.check({repoFile, ctx.repo}, p)) {
                 ctx.logger->write(relPath + " is different " + Diff::diff({repoFile, ctx.repo}, p) + "\n", 1);
             } else {
-                if (diffMode == "file")
-                    ctx.logger->write(relPath + " are same ", 0);
+                if (diffMode == "file") ctx.logger->write(relPath + " are same ", 0);
             }
         }
 
@@ -76,7 +75,8 @@ void CommandDiff::run(Context ctx) {
     if (diffMode == "normal") {
         /// If a second archive is given, run the task for each of its files, otherwise use the "from" config option
         if (ctx.repo->getConfig().exists("aid2")) {
-            archiveO2.emplace(Serialize::deserialize<Archive>(ctx.repo->getObject(ctx.repo->getConfig().getInt("aid2"))));
+            archiveO2.emplace(
+                    Serialize::deserialize<Archive>(ctx.repo->getObject(ctx.repo->getConfig().getInt("aid2"))));
 
             threadPool.push([&]() {
                 for (auto id: archiveO2.value().files) {
@@ -84,9 +84,7 @@ void CommandDiff::run(Context ctx) {
                     if (Signals::shouldQuit) throw Exception("Quitting");
                     auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
                     if (isSubpath(ctx.repo->getConfig().getStr("prefix"), std::filesystem::u8path(file.name)))
-                        threadPool.push([&, file]() {
-                            processFile(ComparableFile{file, ctx.repo});
-                        });
+                        threadPool.push([&, file]() { processFile(ComparableFile{file, ctx.repo}); });
                     if (Signals::shouldQuit) break;
                 }
 
@@ -97,10 +95,9 @@ void CommandDiff::run(Context ctx) {
             /// Start the diff with the root directory and empty ignore list
             threadPool.push([&, from]() {
                 processDirWithIgnore(
-                        from,
-                        {},
-                        [&](std::function<void()> f) { threadPool.push(std::move(f)); },
-                        [processFile, from, prefix = ctx.repo->getConfig().getStr("prefix")](const std::filesystem::directory_entry &dirEntry) {
+                        from, {}, [&](std::function<void()> f) { threadPool.push(std::move(f)); },
+                        [processFile, from, prefix = ctx.repo->getConfig().getStr("prefix")](
+                                const std::filesystem::directory_entry &dirEntry) {
                             if (isSubpath(prefix, dirEntry.path().lexically_relative(from)))
                                 processFile(ComparableFile{dirEntry, from});
                         });
@@ -113,7 +110,8 @@ void CommandDiff::run(Context ctx) {
         }
 
         if (ctx.repo->getConfig().exists("aid2")) {
-            archiveO2.emplace(Serialize::deserialize<Archive>(ctx.repo->getObject(ctx.repo->getConfig().getInt("aid2"))));
+            archiveO2.emplace(
+                    Serialize::deserialize<Archive>(ctx.repo->getObject(ctx.repo->getConfig().getInt("aid2"))));
             std::map<std::filesystem::path, File> files2;///< Files in the first archive
             for (auto id: archiveO2->files) {
                 auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
@@ -146,7 +144,5 @@ void CommandDiff::run(Context ctx) {
     std::unique_lock finishedLock(threadPool.finishedLock);
     threadPool.finished.wait(finishedLock, [&threadPool] { return threadPool.empty(); });
     if (diffMode == "normal")
-        for (auto const &s: files) {
-            ctx.logger->write(s.first.u8string() + " is removed\n", 0);
-        }
+        for (auto const &s: files) { ctx.logger->write(s.first.u8string() + " is removed\n", 0); }
 }

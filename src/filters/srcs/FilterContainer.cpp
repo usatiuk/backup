@@ -17,7 +17,6 @@ std::vector<char> FilterContainer::filterWrite(std::vector<char> from) const {
 }
 
 std::vector<char> FilterContainer::filterRead(std::vector<char> from) const {
-    for (auto f = filters.crbegin(); f != filters.crend(); f++)
-        from = (*f)->filterRead(std::move(from));
+    for (auto f = filters.crbegin(); f != filters.crend(); f++) from = (*f)->filterRead(std::move(from));
     return from;
 }

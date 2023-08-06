@@ -24,7 +24,8 @@ private:
     /// \param base     Base directory to restore to
     /// \param callback Stats callback
     /// \return         Name of the restored file
-    std::string backupRestoreFile(const File &file, const std::filesystem::path &base, CommandsCommon::workerStatsFunction &callback, Context ctx);
+    std::string backupRestoreFile(const File &file, const std::filesystem::path &base,
+                                  CommandsCommon::workerStatsFunction &callback, Context ctx);
 };
 
 

@@ -27,7 +27,8 @@ TEST(FullTest, Simple) {
     {
         std::filesystem::create_directories("Simple/testfrom");
         for (int i = 0; i < 257; i++) {
-            std::ofstream o(std::filesystem::path("Simple/testfrom") / ("f" + std::to_string(i)), std::ios::binary | std::ios::out | std::ios::trunc);
+            std::ofstream o(std::filesystem::path("Simple/testfrom") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::out | std::ios::trunc);
             for (int j = 0; j < i; j++) o.put(static_cast<char>(j % 256));
         }
         std::filesystem::create_directories("Simple/testfrom/testdir");
@@ -67,7 +68,8 @@ TEST(FullTest, Simple) {
         }
 
         for (int i = 0; i < 257; i++) {
-            std::ifstream o(std::filesystem::path("Simple/testtores") / ("f" + std::to_string(i)), std::ios::binary | std::ios::in);
+            std::ifstream o(std::filesystem::path("Simple/testtores") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::in);
             try {
                 EXPECT_EQ(o.is_open(), true);
                 for (int j = 0; j < i; j++) {
@@ -89,7 +91,8 @@ TEST(FullTest, SimpleWithIgnore) {
     {
         std::filesystem::create_directories("SimpleWithIgnore/testfrom");
         for (int i = 0; i < 257; i++) {
-            std::ofstream o(std::filesystem::path("SimpleWithIgnore/testfrom") / ("f" + std::to_string(i)), std::ios::binary | std::ios::out | std::ios::trunc);
+            std::ofstream o(std::filesystem::path("SimpleWithIgnore/testfrom") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::out | std::ios::trunc);
             for (int j = 0; j < i; j++) o.put(static_cast<char>(j % 256));
         }
         std::filesystem::create_directories("SimpleWithIgnore/testfrom/testdir");
@@ -134,7 +137,9 @@ TEST(FullTest, SimpleWithIgnore) {
     }
     {
         Config conf;
-        conf.add("repo", "SimpleWithIgnore/testto").add("aid", std::to_string(aid)).add("to", "SimpleWithIgnore/testtores");
+        conf.add("repo", "SimpleWithIgnore/testto")
+                .add("aid", std::to_string(aid))
+                .add("to", "SimpleWithIgnore/testtores");
 
         auto repo = std::make_unique<FileRepository>(conf);
         repo->open();
@@ -148,7 +153,8 @@ TEST(FullTest, SimpleWithIgnore) {
         EXPECT_EQ(std::filesystem::is_directory("SimpleWithIgnore/testtores/testdir"), true);
 
         for (int i = 0; i < 257; i++) {
-            std::ifstream o(std::filesystem::path("SimpleWithIgnore/testtores") / ("f" + std::to_string(i)), std::ios::binary | std::ios::in);
+            std::ifstream o(std::filesystem::path("SimpleWithIgnore/testtores") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::in);
             EXPECT_EQ(o.is_open(), true);
             for (int j = 0; j < i; j++) {
                 char c;
@@ -196,13 +202,16 @@ TEST(FullTest, SimpleWithCompress) {
     {
         std::filesystem::create_directories("SimpleWithCompress/testfrom");
         for (int i = 0; i < 257; i++) {
-            std::ofstream o(std::filesystem::path("SimpleWithCompress/testfrom") / ("f" + std::to_string(i)), std::ios::binary | std::ios::out | std::ios::trunc);
+            std::ofstream o(std::filesystem::path("SimpleWithCompress/testfrom") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::out | std::ios::trunc);
             for (int j = 0; j < i; j++) o.put(static_cast<char>(j % 256));
         }
         std::filesystem::create_directories("SimpleWithCompress/testfrom/testdir");
 
         Config conf;
-        conf.add("repo", "SimpleWithCompress/testto").add("compression", "zlib").add("from", "SimpleWithCompress/testfrom");
+        conf.add("repo", "SimpleWithCompress/testto")
+                .add("compression", "zlib")
+                .add("from", "SimpleWithCompress/testfrom");
 
         auto repo = std::make_unique<FileRepository>(conf);
         repo->init();
@@ -215,7 +224,9 @@ TEST(FullTest, SimpleWithCompress) {
     }
     {
         Config conf;
-        conf.add("repo", "SimpleWithCompress/testto").add("aid", std::to_string(aid)).add("to", "SimpleWithCompress/testtores");
+        conf.add("repo", "SimpleWithCompress/testto")
+                .add("aid", std::to_string(aid))
+                .add("to", "SimpleWithCompress/testtores");
 
         auto repo = std::make_unique<FileRepository>(conf);
         repo->open();
@@ -229,7 +240,8 @@ TEST(FullTest, SimpleWithCompress) {
         EXPECT_EQ(std::filesystem::is_directory("SimpleWithCompress/testtores/testdir"), true);
 
         for (int i = 0; i < 257; i++) {
-            std::ifstream o(std::filesystem::path("SimpleWithCompress/testtores") / ("f" + std::to_string(i)), std::ios::binary | std::ios::in);
+            std::ifstream o(std::filesystem::path("SimpleWithCompress/testtores") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::in);
             EXPECT_EQ(o.is_open(), true);
             for (int j = 0; j < i; j++) {
                 char c;
@@ -246,13 +258,19 @@ TEST(FullTest, SimpleWithCompEnd) {
     {
         std::filesystem::create_directories("SimpleWithCompEnd/testfrom");
         for (int i = 0; i < 257; i++) {
-            std::ofstream o(std::filesystem::path("SimpleWithCompEnd/testfrom") / ("f" + std::to_string(i)), std::ios::binary | std::ios::out | std::ios::trunc);
+            std::ofstream o(std::filesystem::path("SimpleWithCompEnd/testfrom") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::out | std::ios::trunc);
             for (int j = 0; j < i; j++) o.put(static_cast<char>(j % 256));
         }
         std::filesystem::create_directories("SimpleWithCompEnd/testfrom/testdir");
 
         Config conf;
-        conf.add("repo", "SimpleWithCompEnd/testto").add("compression", "zlib").add("from", "SimpleWithCompEnd/testfrom").add("encryption", "aes").add("password", "testp").add("salt", "tests");
+        conf.add("repo", "SimpleWithCompEnd/testto")
+                .add("compression", "zlib")
+                .add("from", "SimpleWithCompEnd/testfrom")
+                .add("encryption", "aes")
+                .add("password", "testp")
+                .add("salt", "tests");
 
         auto repo = std::make_unique<FileRepository>(conf);
         repo->init();
@@ -279,7 +297,10 @@ TEST(FullTest, SimpleWithCompEnd) {
     }
     {
         Config conf;
-        conf.add("repo", "SimpleWithCompEnd/testto").add("password", "testp").add("aid", std::to_string(aid)).add("to", "SimpleWithCompEnd/testtores");
+        conf.add("repo", "SimpleWithCompEnd/testto")
+                .add("password", "testp")
+                .add("aid", std::to_string(aid))
+                .add("to", "SimpleWithCompEnd/testtores");
 
         auto repo = std::make_unique<FileRepository>(conf);
         repo->open();
@@ -294,7 +315,8 @@ TEST(FullTest, SimpleWithCompEnd) {
         EXPECT_EQ(std::filesystem::is_directory("SimpleWithCompEnd/testtores/testdir"), true);
 
         for (int i = 0; i < 257; i++) {
-            std::ifstream o(std::filesystem::path("SimpleWithCompEnd/testtores") / ("f" + std::to_string(i)), std::ios::binary | std::ios::in);
+            std::ifstream o(std::filesystem::path("SimpleWithCompEnd/testtores") / ("f" + std::to_string(i)),
+                            std::ios::binary | std::ios::in);
             EXPECT_EQ(o.is_open(), true);
             for (int j = 0; j < i; j++) {
                 char c;
@@ -310,16 +332,40 @@ TEST(FullTest, Fuzz) {
     srand(time(nullptr));
     std::vector<Config> confs;
     Config conf;
-    conf.add("repo", "Fuzz/testto").add("compression", "none").add("from", "Fuzz/testfrom").add("encryption", "none").add("password", "testp").add("salt", "tests").add("progress", "none");
+    conf.add("repo", "Fuzz/testto")
+            .add("compression", "none")
+            .add("from", "Fuzz/testfrom")
+            .add("encryption", "none")
+            .add("password", "testp")
+            .add("salt", "tests")
+            .add("progress", "none");
     confs.emplace_back(conf);
     conf = Config();
-    conf.add("repo", "Fuzz/testto").add("compression", "zlib").add("from", "Fuzz/testfrom").add("encryption", "none").add("password", "testp").add("salt", "tests").add("progress", "none");
+    conf.add("repo", "Fuzz/testto")
+            .add("compression", "zlib")
+            .add("from", "Fuzz/testfrom")
+            .add("encryption", "none")
+            .add("password", "testp")
+            .add("salt", "tests")
+            .add("progress", "none");
     confs.emplace_back(conf);
     conf = Config();
-    conf.add("repo", "Fuzz/testto").add("compression", "none").add("from", "Fuzz/testfrom").add("encryption", "zlib").add("password", "testp").add("salt", "tests").add("progress", "none");
+    conf.add("repo", "Fuzz/testto")
+            .add("compression", "none")
+            .add("from", "Fuzz/testfrom")
+            .add("encryption", "zlib")
+            .add("password", "testp")
+            .add("salt", "tests")
+            .add("progress", "none");
     confs.emplace_back(conf);
     conf = Config();
-    conf.add("repo", "Fuzz/testto").add("compression", "zlib").add("from", "Fuzz/testfrom").add("encryption", "aes").add("password", "testp").add("salt", "tests").add("progress", "none");
+    conf.add("repo", "Fuzz/testto")
+            .add("compression", "zlib")
+            .add("from", "Fuzz/testfrom")
+            .add("encryption", "aes")
+            .add("password", "testp")
+            .add("salt", "tests")
+            .add("progress", "none");
     confs.emplace_back(conf);
 
     for (auto const &conf: confs) {
@@ -332,7 +378,8 @@ TEST(FullTest, Fuzz) {
                 {
                     std::filesystem::create_directories("Fuzz/testfrom");
                     for (int i = 0; i < 2; i++) {
-                        std::ofstream o(std::filesystem::path("Fuzz/testfrom") / ("f" + std::to_string(i)), std::ios::binary | std::ios::out | std::ios::trunc);
+                        std::ofstream o(std::filesystem::path("Fuzz/testfrom") / ("f" + std::to_string(i)),
+                                        std::ios::binary | std::ios::out | std::ios::trunc);
                         for (int j = 0; j < i; j++) o.put(j % 2);
                     }
 
@@ -350,28 +397,28 @@ TEST(FullTest, Fuzz) {
 
                 {
                     if (filetobreak & 0b00000001) {
-                        for (int i = 0; i < cutoff; i++)
-                            randomChange("Fuzz/testto/1");
+                        for (int i = 0; i < cutoff; i++) randomChange("Fuzz/testto/1");
                         if (cutoff > 5)
-                            std::filesystem::resize_file("Fuzz/testto/1", std::filesystem::file_size("Fuzz/testto/1") - cutoff);
+                            std::filesystem::resize_file("Fuzz/testto/1",
+                                                         std::filesystem::file_size("Fuzz/testto/1") - cutoff);
                     }
                     if (filetobreak & 0b00000010) {
-                        for (int i = 0; i < cutoff; i++)
-                            randomChange("Fuzz/testto/index");
+                        for (int i = 0; i < cutoff; i++) randomChange("Fuzz/testto/index");
                         if (cutoff > 5)
-                            std::filesystem::resize_file("Fuzz/testto/index", std::filesystem::file_size("Fuzz/testto/index") - cutoff);
+                            std::filesystem::resize_file("Fuzz/testto/index",
+                                                         std::filesystem::file_size("Fuzz/testto/index") - cutoff);
                     }
                     if (filetobreak & 0b00000100) {
-                        for (int i = 0; i < cutoff; i++)
-                            randomChange("Fuzz/testto/offsets");
+                        for (int i = 0; i < cutoff; i++) randomChange("Fuzz/testto/offsets");
                         if (cutoff > 5)
-                            std::filesystem::resize_file("Fuzz/testto/offsets", std::filesystem::file_size("Fuzz/testto/offsets") - cutoff);
+                            std::filesystem::resize_file("Fuzz/testto/offsets",
+                                                         std::filesystem::file_size("Fuzz/testto/offsets") - cutoff);
                     }
                     if (filetobreak & 0b00001000) {
-                        for (int i = 0; i < cutoff; i++)
-                            randomChange("Fuzz/testto/info");
+                        for (int i = 0; i < cutoff; i++) randomChange("Fuzz/testto/info");
                         if (cutoff > 5)
-                            std::filesystem::resize_file("Fuzz/testto/info", std::filesystem::file_size("Fuzz/testto/info") - cutoff);
+                            std::filesystem::resize_file("Fuzz/testto/info",
+                                                         std::filesystem::file_size("Fuzz/testto/info") - cutoff);
                     }
                 }
 
@@ -391,8 +438,7 @@ TEST(FullTest, Fuzz) {
                         CommandRestore cmd;
                         cmd.run(Context{&logger, repo.get()});
                         auto outstr = runnerout.str();
-                        if (outstr.find("Error") == std::string::npos)
-                            ok = false;
+                        if (outstr.find("Error") == std::string::npos) ok = false;
                     } catch (...) {}
                     EXPECT_EQ(ok, true);
                 }

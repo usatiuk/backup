@@ -22,7 +22,9 @@ public:
     /// \param out      Function to call for output
     /// \param format   Format of the progress string, vector of strings or functions that return strings
     /// \param conf     Config, used to specify format (`pretty` for line rewriting, `simple` for normal line printing, or `none`)
-    Progress(std::function<void(std::string, int)> out, std::vector<std::variant<std::function<std::string()>, std::string>> format, const Config &conf, int level = 1);
+    Progress(std::function<void(std::string, int)> out,
+             std::vector<std::variant<std::function<std::string()>, std::string>> format, const Config &conf,
+             int level = 1);
 
     Progress &operator=(Progress rhs) = delete;
     Progress(const Progress &orig) = delete;

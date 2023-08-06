@@ -17,16 +17,14 @@
 /// Object representing a saved file
 class File : public Object {
 public:
-    enum class Type {
-        Normal,
-        Symlink,
-        Directory,
-        END
-    };
+    enum class Type { Normal, Symlink, Directory, END };
 
-    static inline const std::unordered_map<Type, std::string> TypeToStr{{Type::Normal, "normal"}, {Type::Symlink, "symlink"}, {Type::Directory, "directory"}};
+    static inline const std::unordered_map<Type, std::string> TypeToStr{{Type::Normal, "normal"},
+                                                                        {Type::Symlink, "symlink"},
+                                                                        {Type::Directory, "directory"}};
 
-    File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA, std::map<size_t, idType> chunks, Type fileType);
+    File(Object::idType id, std::string name, unsigned long long bytes, unsigned long long mtime, std::string SHA,
+         std::map<size_t, idType> chunks, Type fileType);
 
     /// Deserialization constructor
     File(std::vector<char>::const_iterator &in, const std::vector<char>::const_iterator &end);

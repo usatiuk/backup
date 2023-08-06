@@ -4,8 +4,7 @@
 
 #include "Logger.h"
 
-Logger::Logger(int level, std::ostream &out) : loglevel(level), out(out) {
-}
+Logger::Logger(int level, std::ostream &out) : loglevel(level), out(out) {}
 
 void Logger::write(const std::string &what, int whatlevel) {
     if (whatlevel <= loglevel) {
@@ -14,6 +13,4 @@ void Logger::write(const std::string &what, int whatlevel) {
     }
 }
 
-void Logger::setLevel(int level) {
-    loglevel = level;
-}
+void Logger::setLevel(int level) { loglevel = level; }

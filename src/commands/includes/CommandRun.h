@@ -22,7 +22,8 @@ private:
     /// \param saveAs   UTF-8 encoded file name to save as
     /// \param callback Stats callback
     /// \return         ID of the saved file
-    Object::idType backupChunkFile(const std::filesystem::path &orig, const std::string &saveAs, CommandsCommon::workerStatsFunction &callback, Context ctx);
+    Object::idType backupChunkFile(const std::filesystem::path &orig, const std::string &saveAs,
+                                   CommandsCommon::workerStatsFunction &callback, Context ctx);
 };
 
 

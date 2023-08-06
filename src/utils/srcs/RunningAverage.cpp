@@ -5,8 +5,7 @@
 #include "RunningAverage.h"
 
 RunningAverage::RunningAverage(std::function<unsigned long long int()> getFunc, int max, int ms)
-    : getFunc(std::move(getFunc)), max(max), ms(ms), thread(&RunningAverage::loop, this) {
-}
+    : getFunc(std::move(getFunc)), max(max), ms(ms), thread(&RunningAverage::loop, this) {}
 
 void RunningAverage::loop() {
     while (!stop) {
