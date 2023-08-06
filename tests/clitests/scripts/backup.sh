@@ -123,7 +123,7 @@ AIDS=()
 OUT=$($CMD list --repo "$TESTDATADIR"/testdir/to1 --password asdff)
 echo "$OUT"
 
-mkdir "$TESTDATADIR"/testmount
+mkdir -p "$TESTDATADIR"/testmount
 $CMD mount --repo "$TESTDATADIR"/testdir/to1 --password asdff --to "$TESTDATADIR"/testmount &
 
 while IFS= read -r l; do
