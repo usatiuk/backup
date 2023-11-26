@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.18)
 
 add_library(change_detectors srcs/ChangeDetector.cpp srcs/ChangeDetectorContainer.cpp srcs/ChangeDetectorFactory.cpp srcs/ComparableFile.cpp srcs/ContentsChangeDetector.cpp srcs/EditTimeChangeDetector.cpp srcs/SizeChangeDetector.cpp srcs/TypeChangeDetector.cpp)
 

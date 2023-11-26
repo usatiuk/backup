@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.18)
 
 add_library(repo srcs/FileRepository.cpp srcs/Object.cpp srcs/Repository.cpp srcs/objects/Archive.cpp srcs/objects/Chunk.cpp srcs/objects/File.cpp srcs/objects/FileBuffer.cpp)
 
