@@ -85,6 +85,6 @@ if ! ( ( echo "$OUT" | grep -q ' notempty/testfile' )\
 fi
 echo "List 1 ok"
 
-rm -rf "$"$TESTDATADIR"/testdataDIR"
+rm -rf "$TESTDATADIR"/testdataDIR
 
 exit 0
