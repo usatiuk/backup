@@ -15,7 +15,7 @@
 
 FileRepository::FileRepository(Config config)
     : Repository(std::move(config)), root(std::filesystem::path(this->config.getStr("repo"))),
-      writeCacheMax(config.getInt("repo-target") * 1024 * 1024) {}
+      writeCacheMax(this->config.getInt("repo-target") * 1024 * 1024) {}
 
 bool FileRepository::exists() { return std::filesystem::is_directory(root) && std::filesystem::exists(root / "info"); }
 

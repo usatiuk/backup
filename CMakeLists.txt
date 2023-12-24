@@ -5,8 +5,9 @@ project(backup)
 if (SANITIZE STREQUAL "YES")
     message(WARNING "Enabling sanitizers!")
     add_compile_options(-Wall -Wextra -pedantic -Wshadow -Wformat=2 -Wfloat-equal -D_GLIBCXX_DEBUG -Wconversion -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2)
-    add_compile_options(-fsanitize=address -fsanitize=undefined -fno-sanitize-recover)
-    add_link_options(-fsanitize=address -fsanitize=undefined -fno-sanitize-recover)
+    # Disable leak sanitizer because it's somehow enabled in Gitea Actions and it crashes with gtest?
+    add_compile_options(-fsanitize=address -fsanitize=undefined -fno-sanitize=leak -fno-sanitize-recover)
+    add_link_options(-fsanitize=address -fsanitize=undefined -fno-sanitize=leak -fno-sanitize-recover)
 endif ()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
