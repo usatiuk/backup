@@ -10,5 +10,5 @@ target_link_libraries(
         GTest::gtest_main crypto
 )
 
-gtest_discover_tests(CryptoTests)
+gtest_discover_tests(CryptoTests DISCOVERY_TIMEOUT 600)
 

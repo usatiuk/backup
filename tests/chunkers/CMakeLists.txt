@@ -8,5 +8,5 @@ target_link_libraries(
         BuzhashTest PRIVATE
         GTest::gtest_main chunkers
 )
-gtest_discover_tests(BuzhashTest)
+gtest_discover_tests(BuzhashTest DISCOVERY_TIMEOUT 600)
 

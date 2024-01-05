@@ -20,5 +20,5 @@ target_link_libraries(
         GTest::gtest_main commands utils testUtils repo
 )
 
-gtest_discover_tests(ChunkTest)
-gtest_discover_tests(FileRepositoryTest)
+gtest_discover_tests(ChunkTest DISCOVERY_TIMEOUT 600)
+gtest_discover_tests(FileRepositoryTest DISCOVERY_TIMEOUT 600)

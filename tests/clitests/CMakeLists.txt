@@ -11,5 +11,5 @@ target_link_libraries(
         CLITests PRIVATE
         GTest::gtest_main testUtils
 )
-gtest_discover_tests(CLITests)
+gtest_discover_tests(CLITests DISCOVERY_TIMEOUT 600)
 

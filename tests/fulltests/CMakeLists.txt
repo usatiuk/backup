@@ -10,5 +10,5 @@ target_link_libraries(
         GTest::gtest_main commands utils testUtils repo
 )
 
-gtest_discover_tests(FullTest)
+gtest_discover_tests(FullTest DISCOVERY_TIMEOUT 600)
 
