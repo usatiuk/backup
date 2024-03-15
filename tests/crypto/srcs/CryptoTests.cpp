@@ -11,32 +11,32 @@ TEST(CryptoTests, AES) {
     std::string in = "hello1";
     auto enc = AES::encrypt(std::vector<char>(in.begin(), in.end()), "p1", "e");
     auto dec = AES::decrypt(enc, "p1", "e");
-    EXPECT_EQ(in, std::string(dec.begin(), dec.end()));
+    ASSERT_EQ(in, std::string(dec.begin(), dec.end()));
 
     in = "";
     enc = AES::encrypt(std::vector<char>(in.begin(), in.end()), "p1", "e");
     dec = AES::decrypt(enc, "p1", "e");
-    EXPECT_EQ(in, std::string(dec.begin(), dec.end()));
+    ASSERT_EQ(in, std::string(dec.begin(), dec.end()));
 
     in = "1234567890asdfg";
     enc = AES::encrypt(std::vector<char>(in.begin(), in.end()), "p1", "e");
     dec = AES::decrypt(enc, "p1", "e");
-    EXPECT_EQ(in, std::string(dec.begin(), dec.end()));
+    ASSERT_EQ(in, std::string(dec.begin(), dec.end()));
 
     in = "1234567890asdfgh";
     enc = AES::encrypt(std::vector<char>(in.begin(), in.end()), "p1", "e");
     dec = AES::decrypt(enc, "p1", "e");
-    EXPECT_EQ(in, std::string(dec.begin(), dec.end()));
+    ASSERT_EQ(in, std::string(dec.begin(), dec.end()));
 
     in = "1234567890asdfghe";
     enc = AES::encrypt(std::vector<char>(in.begin(), in.end()), "p1", "e");
     dec = AES::decrypt(enc, "p1", "e");
-    EXPECT_EQ(in, std::string(dec.begin(), dec.end()));
+    ASSERT_EQ(in, std::string(dec.begin(), dec.end()));
 
     in = "1234567890asdfgheq";
     enc = AES::encrypt(std::vector<char>(in.begin(), in.end()), "p1", "e");
     dec = AES::decrypt(enc, "p1", "e");
-    EXPECT_EQ(in, std::string(dec.begin(), dec.end()));
+    ASSERT_EQ(in, std::string(dec.begin(), dec.end()));
 }
 
 TEST(CryptoTests, SHA) {
@@ -47,6 +47,6 @@ TEST(CryptoTests, SHA) {
 
     auto out = SHA::calculate(data);
 
-    EXPECT_EQ(out.size(), 32);
-    for (int i = 0; i < out.size(); i++) { EXPECT_EQ(static_cast<uint8_t>(out[i]), excepted[i]); }
+    ASSERT_EQ(out.size(), 32);
+    for (int i = 0; i < out.size(); i++) { ASSERT_EQ(static_cast<uint8_t>(out[i]), excepted[i]); }
 }

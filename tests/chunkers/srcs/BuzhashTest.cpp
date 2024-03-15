@@ -26,11 +26,11 @@ TEST(BuzhashTest, SimpleTest) {
         for (int i = 0; i < loremipsum.length(); i++) {
             b2.feed((uint8_t) loremipsum[i]);
             if (b2.get() == h1) {
-                EXPECT_EQ(i, loremipsum.find("e eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non p"));
+                ASSERT_EQ(i, loremipsum.find("e eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non p"));
                 h1found = true;
                 break;
             }
         }
-        EXPECT_EQ(h1found, true);
+        ASSERT_EQ(h1found, true);
     }
 }

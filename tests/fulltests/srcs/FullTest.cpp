@@ -61,7 +61,7 @@ TEST(FullTest, Simple) {
     }
     {
         try {
-            EXPECT_EQ(std::filesystem::is_directory("Simple/testtores/testdir"), true);
+            ASSERT_EQ(std::filesystem::is_directory("Simple/testtores/testdir"), true);
         } catch (...) {
             std::cerr << "Empty directory doesn't exist!" << std::endl;
             throw;
@@ -71,11 +71,11 @@ TEST(FullTest, Simple) {
             std::ifstream o(std::filesystem::path("Simple/testtores") / ("f" + std::to_string(i)),
                             std::ios::binary | std::ios::in);
             try {
-                EXPECT_EQ(o.is_open(), true);
+                ASSERT_EQ(o.is_open(), true);
                 for (int j = 0; j < i; j++) {
                     char c;
-                    EXPECT_EQ(o.get(c).operator bool(), true);
-                    EXPECT_EQ(static_cast<char>(j % 256), c);
+                    ASSERT_EQ(o.get(c).operator bool(), true);
+                    ASSERT_EQ(static_cast<char>(j % 256), c);
                 }
             } catch (...) {
                 std::cerr << "Error comparing file " << i << std::endl;
@@ -150,16 +150,16 @@ TEST(FullTest, SimpleWithIgnore) {
         cmd.run(Context{&logger, repo.get()});
     }
     {
-        EXPECT_EQ(std::filesystem::is_directory("SimpleWithIgnore/testtores/testdir"), true);
+        ASSERT_EQ(std::filesystem::is_directory("SimpleWithIgnore/testtores/testdir"), true);
 
         for (int i = 0; i < 257; i++) {
             std::ifstream o(std::filesystem::path("SimpleWithIgnore/testtores") / ("f" + std::to_string(i)),
                             std::ios::binary | std::ios::in);
-            EXPECT_EQ(o.is_open(), true);
+            ASSERT_EQ(o.is_open(), true);
             for (int j = 0; j < i; j++) {
                 char c;
-                EXPECT_EQ(o.get(c).operator bool(), true);
-                EXPECT_EQ(static_cast<char>(j % 256), c);
+                ASSERT_EQ(o.get(c).operator bool(), true);
+                ASSERT_EQ(static_cast<char>(j % 256), c);
             }
         }
 
@@ -167,31 +167,31 @@ TEST(FullTest, SimpleWithIgnore) {
             std::ifstream file("SimpleWithIgnore/testtores/testdir2/.ignore");
             std::string s;
             file >> s;
-            EXPECT_EQ(s, "hello.txt");
+            ASSERT_EQ(s, "hello.txt");
         }
         {
             std::ifstream file("SimpleWithIgnore/testtores/testdir2/testdir3/.ignore");
             std::string s;
             file >> s;
-            EXPECT_EQ(s, ".*\\.txt");
+            ASSERT_EQ(s, ".*\\.txt");
         }
         {
             std::ifstream file("SimpleWithIgnore/testtores/testdir2/hello.txt");
-            EXPECT_EQ(!file, true);
+            ASSERT_EQ(!file, true);
         }
         {
             std::ifstream file("SimpleWithIgnore/testtores/testdir2/testdir3/hello.txt");
-            EXPECT_EQ(!file, true);
+            ASSERT_EQ(!file, true);
         }
         {
             std::ifstream file("SimpleWithIgnore/testtores/testdir2/testdir3/asdf.txt");
-            EXPECT_EQ(!file, true);
+            ASSERT_EQ(!file, true);
         }
         {
             std::ifstream file("SimpleWithIgnore/testtores/testdir2/testdir4/asdf.txt");
             std::string s;
             file >> s;
-            EXPECT_EQ(s, "asdf2");
+            ASSERT_EQ(s, "asdf2");
         }
     }
 }
@@ -237,16 +237,16 @@ TEST(FullTest, SimpleWithCompress) {
         cmd.run(Context{&logger, repo.get()});
     }
     {
-        EXPECT_EQ(std::filesystem::is_directory("SimpleWithCompress/testtores/testdir"), true);
+        ASSERT_EQ(std::filesystem::is_directory("SimpleWithCompress/testtores/testdir"), true);
 
         for (int i = 0; i < 257; i++) {
             std::ifstream o(std::filesystem::path("SimpleWithCompress/testtores") / ("f" + std::to_string(i)),
                             std::ios::binary | std::ios::in);
-            EXPECT_EQ(o.is_open(), true);
+            ASSERT_EQ(o.is_open(), true);
             for (int j = 0; j < i; j++) {
                 char c;
-                EXPECT_EQ(o.get(c).operator bool(), true);
-                EXPECT_EQ(static_cast<char>(j % 256), c);
+                ASSERT_EQ(o.get(c).operator bool(), true);
+                ASSERT_EQ(static_cast<char>(j % 256), c);
             }
         }
     }
@@ -290,10 +290,10 @@ TEST(FullTest, SimpleWithCompEnd) {
 
         bool ok = true;
         try {
-            EXPECT_EQ(repo->open(), false);
+            ASSERT_EQ(repo->open(), false);
             ok = false;
         } catch (...) {}
-        EXPECT_EQ(ok, true);
+        ASSERT_EQ(ok, true);
     }
     {
         Config conf;
@@ -312,16 +312,16 @@ TEST(FullTest, SimpleWithCompEnd) {
         cmd.run(Context{&logger, repo.get()});
     }
     {
-        EXPECT_EQ(std::filesystem::is_directory("SimpleWithCompEnd/testtores/testdir"), true);
+        ASSERT_EQ(std::filesystem::is_directory("SimpleWithCompEnd/testtores/testdir"), true);
 
         for (int i = 0; i < 257; i++) {
             std::ifstream o(std::filesystem::path("SimpleWithCompEnd/testtores") / ("f" + std::to_string(i)),
                             std::ios::binary | std::ios::in);
-            EXPECT_EQ(o.is_open(), true);
+            ASSERT_EQ(o.is_open(), true);
             for (int j = 0; j < i; j++) {
                 char c;
-                EXPECT_EQ(o.get(c).operator bool(), true);
-                EXPECT_EQ(static_cast<char>(j % 256), c);
+                ASSERT_EQ(o.get(c).operator bool(), true);
+                ASSERT_EQ(static_cast<char>(j % 256), c);
             }
         }
     }
@@ -440,7 +440,7 @@ TEST(FullTest, Fuzz) {
                         auto outstr = runnerout.str();
                         if (outstr.find("Error") == std::string::npos) ok = false;
                     } catch (...) {}
-                    EXPECT_EQ(ok, true);
+                    ASSERT_EQ(ok, true);
                 }
             }
         }

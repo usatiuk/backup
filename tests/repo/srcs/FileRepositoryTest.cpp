@@ -32,8 +32,8 @@ TEST(FileRepository, Deserialize) {
         repo.putObject(o2);
 
 
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
     }
     {
         Config conf;
@@ -45,8 +45,8 @@ TEST(FileRepository, Deserialize) {
         std::string o2k(16, '\0');
         o2k[0] = 1;
         o2k[1] = 2;
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
 
         auto o1o = repo.getObject(666);
         auto o2o = repo.getObject(777);
@@ -61,18 +61,18 @@ TEST(FileRepository, Deserialize) {
         std::vector<char> data2{'q', 'w', 'e', 'r', static_cast<char>(255)};
         Chunk o2e(777, o2k, data2);
 
-        EXPECT_EQ(o1.id, o1e.id);
-        EXPECT_EQ(o2.id, o2e.id);
-        EXPECT_EQ((int) o1.type, (int) o1e.type);
-        EXPECT_EQ((int) o2.type, (int) o2e.type);
+        ASSERT_EQ(o1.id, o1e.id);
+        ASSERT_EQ(o2.id, o2e.id);
+        ASSERT_EQ((int) o1.type, (int) o1e.type);
+        ASSERT_EQ((int) o2.type, (int) o2e.type);
         auto o1d = o1.data;
         auto o1ed = o1e.data;
         auto o2d = o2.data;
         auto o2ed = o2e.data;
-        EXPECT_EQ(o1.data.size(), o1e.data.size());
-        EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
-        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
+        ASSERT_EQ(o1.data.size(), o1e.data.size());
+        ASSERT_EQ(o2.data.size(), o2e.data.size());
+        for (int i = 0; i < o1.data.size(); i++) { ASSERT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { ASSERT_EQ(o2.data[i], o2e.data[i]); }
     }
 }
 
@@ -103,8 +103,8 @@ TEST(FileRepository, Filters) {
         repo.putObject(o2);
 
 
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
     }
     {
         Config conf;
@@ -160,8 +160,8 @@ TEST(FileRepository, Filters) {
         std::string o2k(16, '\0');
         o2k[0] = 1;
         o2k[1] = 2;
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
 
         auto o1o = repo.getObject(666);
         auto o2o = repo.getObject(777);
@@ -176,18 +176,18 @@ TEST(FileRepository, Filters) {
         std::vector<char> data2{'q', 'w', 'e', 'r', 'b'};
         Chunk o2e(777, o2k, data2);
 
-        EXPECT_EQ(o1.id, o1e.id);
-        EXPECT_EQ(o2.id, o2e.id);
-        EXPECT_EQ((int) o1.type, (int) o1e.type);
-        EXPECT_EQ((int) o2.type, (int) o2e.type);
+        ASSERT_EQ(o1.id, o1e.id);
+        ASSERT_EQ(o2.id, o2e.id);
+        ASSERT_EQ((int) o1.type, (int) o1e.type);
+        ASSERT_EQ((int) o2.type, (int) o2e.type);
         auto o1d = o1.data;
         auto o1ed = o1e.data;
         auto o2d = o2.data;
         auto o2ed = o2e.data;
-        EXPECT_EQ(o1.data.size(), o1e.data.size());
-        EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
-        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
+        ASSERT_EQ(o1.data.size(), o1e.data.size());
+        ASSERT_EQ(o2.data.size(), o2e.data.size());
+        for (int i = 0; i < o1.data.size(); i++) { ASSERT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { ASSERT_EQ(o2.data[i], o2e.data[i]); }
     }
 }
 
@@ -209,15 +209,15 @@ TEST(FileRepository, IDsDisabled) {
         std::vector<char> data2{'q', 'w', 'e', 'r', 'b'};
         Chunk o2(repo.getId(), o2k, data2);
 
-        EXPECT_EQ(o1.id, 1);
-        EXPECT_EQ(o2.id, 2);
+        ASSERT_EQ(o1.id, 1);
+        ASSERT_EQ(o2.id, 2);
 
         repo.putObject(o1);
         repo.putObject(o2);
 
 
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 1);
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 1);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
     }
     {
         Config conf;
@@ -239,22 +239,22 @@ TEST(FileRepository, IDsDisabled) {
         std::vector<char> data2{'q', 'w', 'e', 'r', 'b'};
         Chunk o2e(2, o2k, data2);
 
-        EXPECT_EQ(o1.id, o1e.id);
-        EXPECT_EQ(o2.id, o2e.id);
-        EXPECT_EQ((int) o1.type, (int) o1e.type);
-        EXPECT_EQ((int) o2.type, (int) o2e.type);
+        ASSERT_EQ(o1.id, o1e.id);
+        ASSERT_EQ(o2.id, o2e.id);
+        ASSERT_EQ((int) o1.type, (int) o1e.type);
+        ASSERT_EQ((int) o2.type, (int) o2e.type);
         auto o1d = o1.data;
         auto o1ed = o1e.data;
         auto o2d = o2.data;
         auto o2ed = o2e.data;
-        EXPECT_EQ(o1.data.size(), o1e.data.size());
-        EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
-        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
+        ASSERT_EQ(o1.data.size(), o1e.data.size());
+        ASSERT_EQ(o2.data.size(), o2e.data.size());
+        for (int i = 0; i < o1.data.size(); i++) { ASSERT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { ASSERT_EQ(o2.data[i], o2e.data[i]); }
 
 
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 1);
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 1);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
 
 
         repo.deleteObject(o1);
@@ -267,12 +267,12 @@ TEST(FileRepository, IDsDisabled) {
 
         std::string o2k(16, '\0');
         o2k[0] = 1;
-        EXPECT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
+        ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
 
         auto id = repo.getId();
-        EXPECT_EQ(id, 1);
+        ASSERT_EQ(id, 1);
         std::vector<char> data1{'a', 'b', 'c', 'e'};
         Chunk o1(id, o2k, data1);
-        EXPECT_EQ(repo.getId(), 3);
+        ASSERT_EQ(repo.getId(), 3);
     }
 }

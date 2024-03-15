@@ -29,18 +29,18 @@ TEST(Chunk, Deserialize) {
         std::vector<char> data2{'q', 'w', 'e', 'r', 'b'};
         Chunk o2e(777, {1}, data2);
 
-        EXPECT_EQ(o1.id, o1e.id);
-        EXPECT_EQ(o2.id, o2e.id);
-        EXPECT_EQ((int) o1.type, (int) o1e.type);
-        EXPECT_EQ((int) o2.type, (int) o2e.type);
+        ASSERT_EQ(o1.id, o1e.id);
+        ASSERT_EQ(o2.id, o2e.id);
+        ASSERT_EQ((int) o1.type, (int) o1e.type);
+        ASSERT_EQ((int) o2.type, (int) o2e.type);
 
-        EXPECT_EQ(o1.data.size(), o1e.data.size());
-        EXPECT_EQ(o2.data.size(), o2e.data.size());
-        for (int i = 0; i < o1.data.size(); i++) { EXPECT_EQ(o1.data[i], o1e.data[i]); }
-        for (int i = 0; i < o2.data.size(); i++) { EXPECT_EQ(o2.data[i], o2e.data[i]); }
+        ASSERT_EQ(o1.data.size(), o1e.data.size());
+        ASSERT_EQ(o2.data.size(), o2e.data.size());
+        for (int i = 0; i < o1.data.size(); i++) { ASSERT_EQ(o1.data[i], o1e.data[i]); }
+        for (int i = 0; i < o2.data.size(); i++) { ASSERT_EQ(o2.data[i], o2e.data[i]); }
 
-        for (int i = 0; i < o1.SHA.size(); i++) { EXPECT_EQ(o1.SHA[i], o1e.SHA[i]); }
-        for (int i = 0; i < o2.SHA.size(); i++) { EXPECT_EQ(o2.SHA[i], o2e.SHA[i]); }
+        for (int i = 0; i < o1.SHA.size(); i++) { ASSERT_EQ(o1.SHA[i], o1e.SHA[i]); }
+        for (int i = 0; i < o2.SHA.size(); i++) { ASSERT_EQ(o2.SHA[i], o2e.SHA[i]); }
     }
 }
 
