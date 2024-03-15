@@ -8,16 +8,17 @@ ThreadPool::ThreadPool(std::function<void(std::string)> onError, std::size_t wor
 }
 
 ThreadPool::~ThreadPool() {
-    stop = true;
-    somethingNew.notify_all();
+    {
+        std::lock_guard lock(queueLock);
+        stop = true;
+        somethingNew.notify_all();
+    }
     for (auto &t: threads) { t.join(); }
 }
 
 void ThreadPool::push(std::function<void()> &&func) {
-    {
-        std::lock_guard lock(queueLock);
-        queue.push(std::move(func));
-    }
+    std::lock_guard lock(queueLock);
+    queue.push(std::move(func));
     somethingNew.notify_one();
 }
 
@@ -43,16 +44,13 @@ void ThreadPool::loop() {
         queue.pop();
 
         qLock.unlock();
-
         try {
             task();
         } catch (std::exception &e) { onError(std::string(e.what())); }
+        qLock.lock();
 
-        {
-            std::lock_guard qLock(queueLock);
-            running--;
-            if (queue.empty() && running == 0) { finished.notify_all(); }
-        }
+        running--;
+        if (queue.empty() && running == 0) { finished.notify_all(); }
     }
 }
 
