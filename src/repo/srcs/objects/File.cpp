@@ -83,3 +83,16 @@ unsigned long long File::getFileSize(const std::filesystem::path &p) {
     else
         return getFileContents(p).size();
 }
+
+void File::makeChunksList() const {
+    if (chunksList) return;
+    chunksList.emplace();
+
+    chunksList->reserve(chunks.size());
+    for (auto const &c: chunks) chunksList->emplace_back(c.second);
+}
+
+const std::vector<Object::idType> &File::getRefs() const {
+    if (!chunksList) makeChunksList();
+    return *chunksList;
+}

@@ -17,3 +17,7 @@ void Object::serialize(std::vector<char> &out) const {
 }
 
 Object::~Object() = default;
+
+static std::vector<Object::idType> emptyRef{};
+
+const std::vector<Object::idType> &Object::getRefs() const { return emptyRef; }

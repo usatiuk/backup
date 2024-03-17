@@ -68,6 +68,12 @@ public:
     /// List of the chunks in file
     /// Normal file has normal chunks as its contents, for Directory it's empty, Symlink has a chunk with its target path
     const std::map<size_t, idType> chunks;
+
+    const std::vector<idType> &getRefs() const override;
+
+private:
+    void makeChunksList() const;
+    mutable std::optional<std::vector<idType>> chunksList{std::nullopt};
 };
 
 

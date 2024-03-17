@@ -31,6 +31,9 @@ public:
     /// All derived objects should implement this method
     virtual std::string getKey() const = 0;
 
+    /// Returns the keys of that this object refers to
+    virtual const std::vector<idType> &getRefs() const;
+
     const idType id;      ///< Unique numerical of the object
     const ObjectType type;///< Type of the object
 

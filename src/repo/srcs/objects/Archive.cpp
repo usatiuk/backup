@@ -28,3 +28,5 @@ void Archive::serialize(std::vector<char> &out) const {
 }
 
 std::string Archive::getKey() const { return name; }
+
+const std::vector<Object::idType> &Archive::getRefs() const { return files; }

@@ -22,6 +22,9 @@ public:
     /// Returns the name of the archive
     std::string getKey() const override;
 
+    /// Returns the files in this archive
+    const std::vector<Object::idType> &getRefs() const override;
+
     const std::string name;         ///< Archive name
     const unsigned long long mtime; ///< Time of creation
     const std::vector<idType> files;///< List of ids of File objects in the Archive
