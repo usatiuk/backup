@@ -11,7 +11,7 @@
 #include "../Object.h"
 
 /// Object representing a part of a File
-class Chunk : public Object {
+class Chunk final : public Object {
 public:
     Chunk(idType id, std::string, std::vector<char> data);
 

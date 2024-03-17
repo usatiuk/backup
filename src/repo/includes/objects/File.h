@@ -15,7 +15,7 @@
 #include "../Object.h"
 
 /// Object representing a saved file
-class File : public Object {
+class File final : public Object {
 public:
     enum class Type { Normal, Symlink, Directory, END };
 

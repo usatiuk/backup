@@ -10,7 +10,7 @@
 #include "../Object.h"
 
 /// Object representing a backup
-class Archive : public Object {
+class Archive final : public Object {
 public:
     Archive(Object::idType id, std::string name, unsigned long long mtime, std::vector<idType> files);
 
