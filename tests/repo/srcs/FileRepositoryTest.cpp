@@ -48,8 +48,8 @@ TEST(FileRepository, Deserialize) {
         ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
         ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
 
-        auto o1o = repo.getObject(666);
-        auto o2o = repo.getObject(777);
+        auto o1o = repo.getObjectRaw(666);
+        auto o2o = repo.getObjectRaw(777);
 
         auto o1ob = o1o.cbegin();
         auto o2ob = o2o.cbegin();
@@ -126,7 +126,7 @@ TEST(FileRepository, Filters) {
 
 
         try {
-            auto o1o = repo.getObject(666);
+            auto o1o = repo.getObjectRaw(666);
             auto o1ob = o1o.cbegin();
 
             Chunk o1(o1ob, o1o.cend());
@@ -134,7 +134,7 @@ TEST(FileRepository, Filters) {
         } catch (...) {}
 
         try {
-            auto o2o = repo.getObject(777);
+            auto o2o = repo.getObjectRaw(777);
             auto o2ob = o2o.cbegin();
 
             Chunk o2(o2ob, o2o.cend());
@@ -163,8 +163,8 @@ TEST(FileRepository, Filters) {
         ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o1k), 666);
         ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 777);
 
-        auto o1o = repo.getObject(666);
-        auto o2o = repo.getObject(777);
+        auto o1o = repo.getObjectRaw(666);
+        auto o2o = repo.getObjectRaw(777);
 
         auto o1ob = o1o.cbegin();
         auto o2ob = o2o.cbegin();
@@ -224,8 +224,8 @@ TEST(FileRepository, IDsDisabled) {
         conf.add("repo", "IDS/testrepo");
         FileRepository repo(conf);
         repo.open();
-        auto o1o = repo.getObject(1);
-        auto o2o = repo.getObject(2);
+        auto o1o = repo.getObjectRaw(1);
+        auto o2o = repo.getObjectRaw(2);
 
         auto o1ob = o1o.cbegin();
         auto o2ob = o2o.cbegin();

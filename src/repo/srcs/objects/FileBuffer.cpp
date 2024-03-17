@@ -7,7 +7,7 @@
 #include "Serialize.h"
 
 FileBuffer::FileBuffer(const Repository *repo, Object::idType fileId)
-    : repo(repo), file(Serialize::deserialize<File>(repo->getObject(fileId))), chunksQueue() {
+    : repo(repo), file(Serialize::deserialize<File>(repo->getObjectRaw(fileId))), chunksQueue() {
     for (auto const &id: file.chunks) chunksQueue.emplace(id.second);
 };
 
@@ -35,7 +35,7 @@ int FileBuffer::underflow() {
     if (getBuf.empty() || curGetBufPos == getBuf.size()) {
         if (chunksQueue.empty()) return traits_type::eof();
         else {
-            auto chunk = Serialize::deserialize<Chunk>(repo->getObject(chunksQueue.front()));
+            auto chunk = Serialize::deserialize<Chunk>(repo->getObjectRaw(chunksQueue.front()));
             getBuf = chunk.data;
             chunksQueue.pop();
             curGetBufPos = 0;

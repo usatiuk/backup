@@ -45,7 +45,7 @@ public:
     /// \param id ID of object to return
     /// \return   Serialized object
     /// \throws   Exception on any error or if object doesn't exist
-    virtual std::vector<char> getObject(Object::idType id) const = 0;
+    virtual std::vector<char> getObjectRaw(Object::idType id) const = 0;
 
     /// Adds the Object \p obj to the Repository
     /// \param obj  Constant reference to the object
@@ -64,7 +64,7 @@ public:
     /// \param key  Constant reference to the key of the object
     /// \return     Serialized object
     /// \throws   Exception on any error or if object doesn't exist
-    virtual std::vector<char> getObject(Object::ObjectType type, const std::string &key) const = 0;
+    virtual std::vector<char> getObjectRaw(Object::ObjectType type, const std::string &key) const = 0;
 
     /// Returns the id of an Object of type \p type and with key \p key
     /// \param type Type of the object

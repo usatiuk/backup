@@ -68,14 +68,14 @@ void CommandRestore::run(Context ctx) {
         /// Add the main restore task
         threadPool.push([&, this]() {
             /// Get the archive and its file IDs
-            auto archiveO = Serialize::deserialize<Archive>(ctx.repo->getObject(archive));
+            auto archiveO = Serialize::deserialize<Archive>(ctx.repo->getObjectRaw(archive));
             std::vector<Object::idType> files = archiveO.files;
             /// For each file...
             for (const auto fid: files) {
                 /// Stop when asked to
                 if (Signals::shouldQuit) break;
 
-                auto file = Serialize::deserialize<File>(ctx.repo->getObject(fid));
+                auto file = Serialize::deserialize<File>(ctx.repo->getObjectRaw(fid));
                 filesToRestoreCount++;
                 bytesToRestore += file.bytes;
                 /// Spawn a restore task
@@ -105,7 +105,7 @@ std::string CommandRestore::backupRestoreFile(const File &file, const std::files
         return fullpath.string();
     }
     if (file.fileType == File::Type::Symlink) {
-        auto dest = Serialize::deserialize<Chunk>(ctx.repo->getObject(file.chunks.at(0)));
+        auto dest = Serialize::deserialize<Chunk>(ctx.repo->getObjectRaw(file.chunks.at(0)));
         std::filesystem::create_symlink(std::filesystem::path(std::string{dest.data.begin(), dest.data.end()}),
                                         fullpath);
         callback(0, 0, 1);
@@ -116,7 +116,7 @@ std::string CommandRestore::backupRestoreFile(const File &file, const std::files
     for (const auto cid: file.chunks) {
         if (Signals::shouldQuit) throw Exception("Quitting!");
 
-        Chunk c = Serialize::deserialize<Chunk>(ctx.repo->getObject(cid.second));
+        Chunk c = Serialize::deserialize<Chunk>(ctx.repo->getObjectRaw(cid.second));
         if (!c.data.empty()) {
             ostream.rdbuf()->sputn(c.data.data(), c.data.size());
             callback(c.data.size(), 0, 0);

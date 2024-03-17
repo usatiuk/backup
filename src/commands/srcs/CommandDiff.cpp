@@ -38,11 +38,11 @@ void CommandDiff::run(Context ctx) {
                           ctx.repo->getConfig().exists("threads") ? ctx.repo->getConfig().getInt("threads")
                                                                   : std::thread::hardware_concurrency());
 
-    auto archiveO1 = Serialize::deserialize<Archive>(ctx.repo->getObject(archive1));
+    auto archiveO1 = Serialize::deserialize<Archive>(ctx.repo->getObjectRaw(archive1));
     std::mutex filesLock;
     std::map<std::filesystem::path, File> files;///< Files in the first archive
     for (auto id: archiveO1.files) {
-        auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
+        auto file = Serialize::deserialize<File>(ctx.repo->getObjectRaw(id));
         auto path = std::filesystem::path(file.name);
         if (isSubpath(ctx.repo->getConfig().getStr("prefix"), path)) files.emplace(file.getKey(), std::move(file));
     }
@@ -76,13 +76,13 @@ void CommandDiff::run(Context ctx) {
         /// If a second archive is given, run the task for each of its files, otherwise use the "from" config option
         if (ctx.repo->getConfig().exists("aid2")) {
             archiveO2.emplace(
-                    Serialize::deserialize<Archive>(ctx.repo->getObject(ctx.repo->getConfig().getInt("aid2"))));
+                    Serialize::deserialize<Archive>(ctx.repo->getObjectRaw(ctx.repo->getConfig().getInt("aid2"))));
 
             threadPool.push([&]() {
                 for (auto id: archiveO2.value().files) {
                     /// Exit when asked to
                     if (Signals::shouldQuit) throw Exception("Quitting");
-                    auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
+                    auto file = Serialize::deserialize<File>(ctx.repo->getObjectRaw(id));
                     if (isSubpath(ctx.repo->getConfig().getStr("prefix"), std::filesystem::path(file.name)))
                         threadPool.push([&, file]() { processFile(ComparableFile{file, ctx.repo}); });
                     if (Signals::shouldQuit) break;
@@ -111,10 +111,10 @@ void CommandDiff::run(Context ctx) {
 
         if (ctx.repo->getConfig().exists("aid2")) {
             archiveO2.emplace(
-                    Serialize::deserialize<Archive>(ctx.repo->getObject(ctx.repo->getConfig().getInt("aid2"))));
+                    Serialize::deserialize<Archive>(ctx.repo->getObjectRaw(ctx.repo->getConfig().getInt("aid2"))));
             std::map<std::filesystem::path, File> files2;///< Files in the first archive
             for (auto id: archiveO2->files) {
-                auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
+                auto file = Serialize::deserialize<File>(ctx.repo->getObjectRaw(id));
                 auto path = std::filesystem::path(file.name);
                 if (isSubpath(ctx.repo->getConfig().getStr("prefix"), path))
                     files2.emplace(file.getKey(), std::move(file));

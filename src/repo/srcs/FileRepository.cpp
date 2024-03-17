@@ -82,7 +82,7 @@ FileRepository::~FileRepository() {
     }
 }
 
-std::vector<char> FileRepository::getObject(Object::idType id) const {
+std::vector<char> FileRepository::getObjectRaw(Object::idType id) const {
     if (!ready) throw Exception("Tried working with uninitialized repo!");
 
     std::unique_lock lock(repoLock);
@@ -188,8 +188,8 @@ bool FileRepository::writeFile(const std::filesystem::path &file, const std::vec
     return true;
 }
 
-std::vector<char> FileRepository::getObject(Object::ObjectType type, const std::string &key) const {
-    return getObject(getObjectId(type, key));
+std::vector<char> FileRepository::getObjectRaw(Object::ObjectType type, const std::string &key) const {
+    return getObjectRaw(getObjectId(type, key));
 }
 
 Object::idType FileRepository::getObjectId(Object::ObjectType type, const std::string &key) const {

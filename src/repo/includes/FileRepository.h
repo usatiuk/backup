@@ -35,11 +35,11 @@ public:
     bool init() override;
     bool flush() override;
 
-    std::vector<char> getObject(Object::idType id) const override;
+    std::vector<char> getObjectRaw(Object::idType id) const override;
     bool putObject(const Object &obj) override;
     bool deleteObject(const Object &obj) override;
 
-    std::vector<char> getObject(Object::ObjectType type, const std::string &key) const override;
+    std::vector<char> getObjectRaw(Object::ObjectType type, const std::string &key) const override;
     Object::idType getObjectId(Object::ObjectType type, const std::string &key) const override;
     std::vector<std::pair<std::string, Object::idType>> getObjects(Object::ObjectType type) const override;
 

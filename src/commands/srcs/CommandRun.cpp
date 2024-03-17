@@ -89,7 +89,7 @@ void CommandRun::run(Context ctx) {
             auto relPath = p.lexically_relative(from).string();
 
             if (ctx.repo->exists(Object::ObjectType::File, relPath) != 0) {
-                File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(Object::ObjectType::File, relPath));
+                File repoFile = Serialize::deserialize<File>(ctx.repo->getObjectRaw(Object::ObjectType::File, relPath));
                 if (!changeDetector.check({repoFile, ctx.repo}, {p, from})) {
                     addFile(repoFile.id);
                     progress.print("Skipped: " + relPath, 1);

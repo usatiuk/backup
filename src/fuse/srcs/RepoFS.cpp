@@ -101,7 +101,7 @@ static int rfsRead(const char *path, char *buf, size_t size, off_t offset, struc
         size_t curInBuf = 0;
         size_t curInChunk = offset - curchunk->first;
         while (curInBuf < size) {
-            auto chunk = Serialize::deserialize<Chunk>(RepoFS::repo->getObject(curchunk->second));
+            auto chunk = Serialize::deserialize<Chunk>(RepoFS::repo->getObjectRaw(curchunk->second));
             size_t read = std::min((size_t) chunk.length - curInChunk, size - curInBuf);
             memcpy(buf + curInBuf, chunk.data.data() + curInChunk, read);
             curInBuf += read;
@@ -121,7 +121,7 @@ static int rfsReadlink(const char *path, char *buf, size_t size) {
         } catch (...) { return -ENOENT; }
 
     if (entry->file->fileType != File::Type::Symlink) return -ENOENT;
-    auto dst = Serialize::deserialize<Chunk>(RepoFS::repo->getObject(entry->file->chunks.at(0)));
+    auto dst = Serialize::deserialize<Chunk>(RepoFS::repo->getObjectRaw(entry->file->chunks.at(0)));
     strncpy(buf, dst.data.data(), std::min(dst.data.size(), size));
 
     return 0;
@@ -139,9 +139,9 @@ void RepoFS::start(Repository *repo, std::string path) {
     RepoFS::repo = repo;
     auto ars = repo->getObjects(Object::ObjectType::Archive);
     for (auto const &r: ars) {
-        auto a = Serialize::deserialize<Archive>(repo->getObject(r.second));
+        auto a = Serialize::deserialize<Archive>(repo->getObjectRaw(r.second));
         for (auto const &f: a.files) {
-            auto file = Serialize::deserialize<File>(repo->getObject(f));
+            auto file = Serialize::deserialize<File>(repo->getObjectRaw(f));
             auto path = std::filesystem::path(file.name);
             DirEntry *entry = root->children[std::to_string(a.id)].get()
                                       ? root->children[std::to_string(a.id)].get()
