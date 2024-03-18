@@ -19,10 +19,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - run: apt-get update && apt-get install -y sudo
         if: env.ACT=='true'
+
+      - name: Fix kernel mmap rnd bits
+        # Asan in llvm 14 provided in ubuntu 22.04 is incompatible with
+        # high-entropy ASLR in much newer kernels that GitHub runners are
+        # using leading to random crashes: https://reviews.llvm.org/D148280
+        run: sudo sysctl vm.mmap_rnd_bits=28
+        if: env.ACT!='true'
      
       - name: install everything
         run: sudo apt-get update && sudo apt-get install -y fuse libfuse-dev cmake build-essential gcc g++ libssl-dev zlib1g-dev
