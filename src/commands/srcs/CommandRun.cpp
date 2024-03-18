@@ -79,14 +79,14 @@ void CommandRun::run(Context ctx) {
                     File::getFileType(absPath) == File::Type::Normal ? std::filesystem::file_size(absPath) : 0;
             runnerStats.filesToSaveCount++;
             threadPool.push([&, relPath, absPath]() {
-                addFile(backupChunkFile(absPath, relPath.u8string(), workerCallback, ctx));
-                progress.print("Copied: " + relPath.u8string(), 1);
+                addFile(backupChunkFile(absPath, relPath.string(), workerCallback, ctx));
+                progress.print("Copied: " + relPath.string(), 1);
             });
         };
 
         /// Task to process an individual file in the backup
         std::function<void(std::filesystem::path)> processFile = [&, this](const std::filesystem::path &p) {
-            auto relPath = p.lexically_relative(from).u8string();
+            auto relPath = p.lexically_relative(from).string();
 
             if (ctx.repo->exists(Object::ObjectType::File, relPath) != 0) {
                 File repoFile = Serialize::deserialize<File>(ctx.repo->getObject(Object::ObjectType::File, relPath));
@@ -144,10 +144,10 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
         ctx.repo->putObject(f);
         return f.id;
     }
-    if (!std::filesystem::is_regular_file(orig)) throw Exception(orig.u8string() + "is a special file, not saving");
+    if (!std::filesystem::is_regular_file(orig)) throw Exception(orig.string() + "is a special file, not saving");
 
     std::ifstream ifstream(orig, std::ios::in | std::ios::binary);
-    if (!ifstream) throw Exception("Couldn't open " + orig.u8string() + " for reading");
+    if (!ifstream) throw Exception("Couldn't open " + orig.string() + " for reading");
     std::unique_ptr<Chunker> chunker = ChunkerFactory::getChunker(ctx.repo->getConfig(), ifstream.rdbuf());
 
     SHA fileHash;
@@ -179,7 +179,7 @@ Object::idType CommandRun::backupChunkFile(const std::filesystem::path &orig, co
     /// We might have exited in the loop before, so we don't save an incomplete file
     if (Signals::shouldQuit) throw Exception("Quitting!");
     if (size != File::getFileSize(orig)) {
-        throw Exception("Something really bad happened or file " + orig.u8string() + " changed during backup");
+        throw Exception("Something really bad happened or file " + orig.string() + " changed during backup");
     }
     File f(ctx.repo->getId(), saveAs, size, File::getFileMtime(orig), fileHash.getHash(), fileChunks,
            File::getFileType(orig));

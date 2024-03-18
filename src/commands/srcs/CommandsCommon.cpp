@@ -18,16 +18,16 @@ void CommandsCommon::workerCallback(unsigned long long int bytesWritten, unsigne
 }
 
 bool CommandsCommon::isSubpath(const std::filesystem::path &prefix, const std::filesystem::path &p) {
-    if (prefix.u8string().size() > p.u8string().size()) return false;
-    for (int i = 0; i < prefix.u8string().size(); i++)
-        if (p.u8string()[i] != prefix.u8string()[i]) return false;
+    if (prefix.string().size() > p.string().size()) return false;
+    for (int i = 0; i < prefix.string().size(); i++)
+        if (p.string()[i] != prefix.string()[i]) return false;
     return true;
 }
 
 void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std::vector<std::string> ignore,
                                           const std::function<void(std::function<void()>)> &spawner,
                                           std::function<void(std::filesystem::directory_entry)> processFile) {
-    if (!std::filesystem::is_directory(dir)) throw Exception(dir.u8string() + " is not a directory!");
+    if (!std::filesystem::is_directory(dir)) throw Exception(dir.string() + " is not a directory!");
 
     /// Don't process the directory if it has a ".nobackup" file
     if (std::filesystem::exists(dir / ".nobackup")) return;
@@ -47,7 +47,7 @@ void CommandsCommon::processDirWithIgnore(const std::filesystem::path &dir, std:
         /// Don't process the entry if it matches any of the ignore rules
         if (std::any_of(ignore.begin(), ignore.end(), [dirEntry](auto pred) {
                 std::smatch m;
-                auto s = dirEntry.path().filename().u8string();
+                auto s = dirEntry.path().filename().string();
                 return std::regex_match(s, m, std::regex(pred));
             }))
             continue;

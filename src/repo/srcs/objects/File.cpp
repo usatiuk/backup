@@ -42,20 +42,20 @@ File::Type File::getFileType(const std::filesystem::path &p) {
     if (std::filesystem::is_symlink(p)) return Type::Symlink;
     if (std::filesystem::is_directory(p)) return Type::Directory;
     if (std::filesystem::is_regular_file(p)) return Type::Normal;
-    throw Exception("Unsupported file type! " + p.u8string());
+    throw Exception("Unsupported file type! " + p.string());
 }
 
 std::vector<char> File::getFileContents(const std::filesystem::path &p) {
     auto type = getFileType(p);
-    if (type == Type::Normal) throw Exception(p.u8string() + " is a normal file!");
+    if (type == Type::Normal) throw Exception(p.string() + " is a normal file!");
     if (type == Type::Directory) { return {}; }
     if (type == Type::Symlink) {
-        auto target = std::filesystem::read_symlink(p).u8string();
+        auto target = std::filesystem::read_symlink(p).string();
         std::vector<char> target_null_term = {target.begin(), target.end()};
         target_null_term.emplace_back('\0');
         return target_null_term;
     }
-    throw Exception("Error with file " + p.u8string());
+    throw Exception("Error with file " + p.string());
 }
 
 unsigned long long File::getFileMtime(const std::filesystem::path &p) {
@@ -65,16 +65,16 @@ unsigned long long File::getFileMtime(const std::filesystem::path &p) {
                 std::chrono::duration_cast<std::chrono::seconds>(std::filesystem::last_write_time(p).time_since_epoch())
                         .count());
     else if (type == Type::Symlink) {
-        auto path = p.u8string();
+        auto path = p.string();
         struct stat sb;
-        if (lstat(path.c_str(), &sb) != 0) throw Exception("Error reading mtime for " + p.u8string());
+        if (lstat(path.c_str(), &sb) != 0) throw Exception("Error reading mtime for " + p.string());
 #ifdef __APPLE__
         return sb.st_mtimespec.tv_sec;
 #else
         return sb.st_mtime;
 #endif
     }
-    throw Exception("Error with file " + p.u8string());
+    throw Exception("Error with file " + p.string());
 }
 
 unsigned long long File::getFileSize(const std::filesystem::path &p) {

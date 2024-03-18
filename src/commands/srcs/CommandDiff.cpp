@@ -43,7 +43,7 @@ void CommandDiff::run(Context ctx) {
     std::map<std::filesystem::path, File> files;///< Files in the first archive
     for (auto id: archiveO1.files) {
         auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
-        auto path = std::filesystem::u8path(file.name);
+        auto path = std::filesystem::path(file.name);
         if (isSubpath(ctx.repo->getConfig().getStr("prefix"), path)) files.emplace(file.getKey(), std::move(file));
     }
 
@@ -83,7 +83,7 @@ void CommandDiff::run(Context ctx) {
                     /// Exit when asked to
                     if (Signals::shouldQuit) throw Exception("Quitting");
                     auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
-                    if (isSubpath(ctx.repo->getConfig().getStr("prefix"), std::filesystem::u8path(file.name)))
+                    if (isSubpath(ctx.repo->getConfig().getStr("prefix"), std::filesystem::path(file.name)))
                         threadPool.push([&, file]() { processFile(ComparableFile{file, ctx.repo}); });
                     if (Signals::shouldQuit) break;
                 }
@@ -115,7 +115,7 @@ void CommandDiff::run(Context ctx) {
             std::map<std::filesystem::path, File> files2;///< Files in the first archive
             for (auto id: archiveO2->files) {
                 auto file = Serialize::deserialize<File>(ctx.repo->getObject(id));
-                auto path = std::filesystem::u8path(file.name);
+                auto path = std::filesystem::path(file.name);
                 if (isSubpath(ctx.repo->getConfig().getStr("prefix"), path))
                     files2.emplace(file.getKey(), std::move(file));
             }
@@ -144,5 +144,5 @@ void CommandDiff::run(Context ctx) {
     std::unique_lock finishedLock(threadPool.finishedLock);
     threadPool.finished.wait(finishedLock, [&threadPool] { return threadPool.empty(); });
     if (diffMode == "normal")
-        for (auto const &s: files) { ctx.logger->write(s.first.u8string() + " is removed\n", 0); }
+        for (auto const &s: files) { ctx.logger->write(s.first.string() + " is removed\n", 0); }
 }

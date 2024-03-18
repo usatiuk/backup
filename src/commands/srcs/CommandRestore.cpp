@@ -24,7 +24,7 @@ CommandRestore::CommandRestore() : Command() {}
 
 void CommandRestore::run(Context ctx) {
     Object::idType archive = ctx.repo->getConfig().getInt("aid");
-    std::filesystem::path to = std::filesystem::u8path(ctx.repo->getConfig().getStr("to"));
+    std::filesystem::path to = std::filesystem::path(ctx.repo->getConfig().getStr("to"));
 
     std::atomic<unsigned long long> filesToRestoreCount = 0;
     std::atomic<unsigned long long> bytesToRestore = 0;
@@ -95,21 +95,21 @@ void CommandRestore::run(Context ctx) {
 
 std::string CommandRestore::backupRestoreFile(const File &file, const std::filesystem::path &baseDir,
                                               workerStatsFunction &callback, Context ctx) {
-    auto fullpath = baseDir / std::filesystem::u8path(file.name);
+    auto fullpath = baseDir / std::filesystem::path(file.name);
 
     std::filesystem::create_directories(fullpath.parent_path());
 
     if (file.fileType == File::Type::Directory) {
         std::filesystem::create_directory(fullpath);
         callback(0, 0, 1);
-        return fullpath.u8string();
+        return fullpath.string();
     }
     if (file.fileType == File::Type::Symlink) {
         auto dest = Serialize::deserialize<Chunk>(ctx.repo->getObject(file.chunks.at(0)));
-        std::filesystem::create_symlink(std::filesystem::u8path(std::string{dest.data.begin(), dest.data.end()}),
+        std::filesystem::create_symlink(std::filesystem::path(std::string{dest.data.begin(), dest.data.end()}),
                                         fullpath);
         callback(0, 0, 1);
-        return fullpath.u8string();
+        return fullpath.string();
     }
 
     std::ofstream ostream(fullpath, std::ios::binary | std::ios::out | std::ios::trunc);
@@ -124,5 +124,5 @@ std::string CommandRestore::backupRestoreFile(const File &file, const std::files
     }
     callback(0, 0, 1);
 
-    return fullpath.u8string();
+    return fullpath.string();
 }

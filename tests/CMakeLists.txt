@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")

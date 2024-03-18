@@ -58,7 +58,7 @@ bool FileRepository::init() {
     if (exists()) throw Exception("Trying to initialize already existing repository!");
 
     if (!std::filesystem::is_directory(root) && !std::filesystem::create_directories(root))
-        throw Exception("Can't create directory " + root.u8string());
+        throw Exception("Can't create directory " + root.string());
 
     writeFile(root / "info", CheckFilter::filterWriteStatic(Serialize::serialize(config)));
 
@@ -157,23 +157,23 @@ bool FileRepository::deleteObject(const Object &obj) {
 std::vector<char> FileRepository::readFile(const std::filesystem::path &file, unsigned long long offset,
                                            unsigned long long size) const {
     if (size > absoluteMaxFileLimit)
-        throw Exception("Tried to read " + std::to_string(size) + " bytes from " + file.u8string() +
+        throw Exception("Tried to read " + std::to_string(size) + " bytes from " + file.string() +
                         " which is more than absoluteMaxFileLimit");
 
     std::ifstream ifstream(file, std::ios::binary | std::ios::in);
-    if (!ifstream.is_open()) throw Exception("Can't open file " + file.u8string() + " for reading!");
+    if (!ifstream.is_open()) throw Exception("Can't open file " + file.string() + " for reading!");
 
     std::vector<char> buf(size);
 
     if (ifstream.rdbuf()->pubseekpos(offset) == std::streampos(std::streamoff(-1)))
-        throw Exception("Unexpected end of file " + file.u8string());
-    if (ifstream.rdbuf()->sgetn(buf.data(), size) != size) throw Exception("Unexpected end of file " + file.u8string());
+        throw Exception("Unexpected end of file " + file.string());
+    if (ifstream.rdbuf()->sgetn(buf.data(), size) != size) throw Exception("Unexpected end of file " + file.string());
 
     return buf;
 }
 
 std::vector<char> FileRepository::readFile(const std::filesystem::path &file) const {
-    if (!std::filesystem::is_regular_file(file)) throw Exception("File " + file.u8string() + " is not a regular file!");
+    if (!std::filesystem::is_regular_file(file)) throw Exception("File " + file.string() + " is not a regular file!");
     auto fileSize = std::filesystem::file_size(file);
     if (fileSize == 0) return {};
     return readFile(file, 0, fileSize);
@@ -181,10 +181,10 @@ std::vector<char> FileRepository::readFile(const std::filesystem::path &file) co
 
 bool FileRepository::writeFile(const std::filesystem::path &file, const std::vector<char> &data) {
     std::ofstream ofstream(file, std::ios::binary | std::ios::trunc | std::ios::out);
-    if (!ofstream.is_open()) throw Exception("Can't open file " + file.u8string() + " for writing!");
+    if (!ofstream.is_open()) throw Exception("Can't open file " + file.string() + " for writing!");
 
     if (ofstream.rdbuf()->sputn(data.data(), data.size()) != data.size())
-        throw Exception("Couldn't write all the data for " + file.u8string());
+        throw Exception("Couldn't write all the data for " + file.string());
     return true;
 }
 

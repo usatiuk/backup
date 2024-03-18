@@ -16,13 +16,13 @@ ComparableFile::ComparableFile(const File &file, const Repository *repo)
       contents([file, repo]() { return std::make_unique<FileBuffer>(repo, file.id); }) {}
 
 ComparableFile::ComparableFile(const std::filesystem::path &p, const std::filesystem::path &base)
-    : path(p.lexically_relative(base).u8string()), type(File::getFileType(p)), bytes(File::getFileSize(p)),
+    : path(p.lexically_relative(base).string()), type(File::getFileType(p)), bytes(File::getFileSize(p)),
       mtime(File::getFileMtime(p)),
       contents([p, path = this->path, type = this->type]() -> std::unique_ptr<std::streambuf> {
           if (type == File::Type::Normal) {
               auto fb = std::make_unique<std::filebuf>();
               fb->open(p, std::ios::in | std::ios::binary);
-              if (!fb->is_open()) throw Exception("Can't open " + p.u8string() + " for reading!");
+              if (!fb->is_open()) throw Exception("Can't open " + p.string() + " for reading!");
               return fb;
           }
 

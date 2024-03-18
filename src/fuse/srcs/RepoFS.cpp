@@ -15,7 +15,7 @@
 #include "objects/Chunk.h"
 
 DirEntry *getf(std::string path) {
-    auto p = std::filesystem::relative(std::filesystem::u8path(path), "/");
+    auto p = std::filesystem::relative(std::filesystem::path(path), "/");
     DirEntry *entry = RepoFS::root.get();
     if (p != ".")
         for (auto const &subp: p) { entry = entry->children.at(subp).get(); }
@@ -142,7 +142,7 @@ void RepoFS::start(Repository *repo, std::string path) {
         auto a = Serialize::deserialize<Archive>(repo->getObject(r.second));
         for (auto const &f: a.files) {
             auto file = Serialize::deserialize<File>(repo->getObject(f));
-            auto path = std::filesystem::u8path(file.name);
+            auto path = std::filesystem::path(file.name);
             DirEntry *entry = root->children[std::to_string(a.id)].get()
                                       ? root->children[std::to_string(a.id)].get()
                                       : (root->children[std::to_string(a.id)] = std::make_unique<DirEntry>()).get();
@@ -153,7 +153,7 @@ void RepoFS::start(Repository *repo, std::string path) {
                                                     : (entry->children[subp] = std::make_unique<DirEntry>()).get();
             }
             entry->file.emplace(file);
-            entry->name = std::filesystem::u8path(file.name).filename().u8string();
+            entry->name = std::filesystem::path(file.name).filename().string();
         }
     }
 
