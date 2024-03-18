@@ -37,7 +37,7 @@ public:
 
     std::vector<char> getObjectRaw(Object::idType id) const override;
     bool putObject(const Object &obj) override;
-    bool deleteObject(const Object &obj) override;
+    bool deleteObjects(const std::vector<Object::idType> &objs) override;
 
     std::vector<char> getObjectRaw(Object::ObjectType type, const std::string &key) const override;
     Object::idType getObjectId(Object::ObjectType type, const std::string &key) const override;
@@ -104,6 +104,8 @@ private:
 
     unsigned long long maxFileId = 1;                           ///< Largest ID of object storage file
     std::unordered_map<Object::idType, OffsetEntry> offsetIndex;///< Used to locate Object%s in the filesystem
+    std::unordered_map<Object::idType, std::set<Object::idType>>
+            fileToObjs;///< Used to locate Object%s in the filesystem
 
     std::mutex writeCacheLock;                             ///< Write cache lock
     std::map<Object::idType, std::vector<char>> writeCache;///< Write cache, map of Object ids and their serialized data
@@ -116,9 +118,12 @@ private:
     /// \param lockW Write cache lock
     void flushWriteCache(std::unique_lock<std::mutex> &&lockW);
 
-    Object::idType largestUnusedId = 1;///< Largest available objectID
+    Object::idType largestUnusedId = 1;   ///< Largest available objectID
+    std::vector<Object::idType> unusedIds;///< Vector of unused IDs
     std::unordered_map<Object::ObjectType, std::unordered_map<std::string, Object::idType>>
             keyIndex;///< Maps Object%'s keys to their ID's
+
+    std::unordered_map<Object::idType, uint64_t> refCounts;///< Count of references to an object per its id
 };
 
 

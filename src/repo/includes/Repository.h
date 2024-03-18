@@ -47,6 +47,12 @@ public:
     /// \throws   Exception on any error or if object doesn't exist
     virtual std::vector<char> getObjectRaw(Object::idType id) const = 0;
 
+    /// Returns the Object with id \p id
+    /// \param id ID of object to return
+    /// \return   Serialized object
+    /// \throws   Exception on any error or if object doesn't exist
+    std::unique_ptr<Object> getObject(Object::idType id) const;
+
     /// Adds the Object \p obj to the Repository
     /// \param obj  Constant reference to the object
     /// \return     True
@@ -54,10 +60,10 @@ public:
     virtual bool putObject(const Object &obj) = 0;
 
     /// Deletes Object \p obj from the Repository
-    /// \param obj  Constant reference to the object
+    /// \param obj  Constant reference to the vector with ids of objects to delete
     /// \return     True if successful, False if it didn't exist
     /// \throws     Exception on any error
-    virtual bool deleteObject(const Object &obj) = 0;
+    virtual bool deleteObjects(const std::vector<Object::idType> &objs) = 0;
 
     /// Returns the Object of type \p type and with key \p key
     /// \param type Type of the object

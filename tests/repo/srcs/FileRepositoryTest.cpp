@@ -192,7 +192,6 @@ TEST(FileRepository, Filters) {
 }
 
 TEST(FileRepository, IDsDisabled) {
-    GTEST_SKIP();
     Cleaner c({"IDS/testrepo"});
     {
         Config conf;
@@ -257,7 +256,7 @@ TEST(FileRepository, IDsDisabled) {
         ASSERT_EQ(repo.getObjectId(Object::ObjectType::Chunk, o2k), 2);
 
 
-        repo.deleteObject(o1);
+        repo.deleteObjects({o1.id});
     }
     {
         Config conf;

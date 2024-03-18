@@ -3,6 +3,7 @@
 
 #include "BytesFormatter.h"
 #include "Command.h"
+#include "CommandDelete.h"
 #include "CommandDiff.h"
 #include "CommandList.h"
 #include "CommandListFiles.h"
@@ -109,6 +110,7 @@ int main(int argc, char *argv[]) {
         commands.emplace(CommandListFiles::name, std::make_unique<CommandListFiles>());
         commands.emplace(CommandList::name, std::make_unique<CommandList>());
         commands.emplace(CommandMount::name, std::make_unique<CommandMount>());
+        commands.emplace(CommandDelete::name, std::make_unique<CommandDelete>());
 
         if (commands.count(opt) == 0) {
             std::cerr << "Unknown argument" << std::endl;

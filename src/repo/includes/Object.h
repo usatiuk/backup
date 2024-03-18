@@ -37,6 +37,10 @@ public:
     const idType id;      ///< Unique numerical of the object
     const ObjectType type;///< Type of the object
 
+    static std::unique_ptr<Object> deserialize(const std::vector<char> &src);
+    static std::unique_ptr<Object> deserialize(std::vector<char>::const_iterator &in,
+                                               const std::vector<char>::const_iterator &end);
+
 protected:
     /// Default constructor
     /// \param id   Object ID

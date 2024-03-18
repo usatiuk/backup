@@ -5,8 +5,10 @@
 #include "FileRepository.h"
 
 #include <exception>
+#include <iostream>
 #include <iterator>
 #include <mutex>
+#include <queue>
 
 #include "CheckFilter.h"
 #include "FilterFactory.h"
@@ -45,6 +47,9 @@ bool FileRepository::open() {
         std::tie(keyIndex, largestUnusedId) =
                 Serialize::deserialize<std::pair<decltype(keyIndex), decltype(largestUnusedId)>>(
                         filters.filterRead(readFile(root / "index")));
+        refCounts = Serialize::deserialize<decltype(refCounts)>(filters.filterRead(readFile(root / "refcounts")));
+        unusedIds = Serialize::deserialize<decltype(unusedIds)>(filters.filterRead(readFile(root / "unusedIds")));
+        fileToObjs = Serialize::deserialize<decltype(fileToObjs)>(filters.filterRead(readFile(root / "fileToObjs")));
     } catch (const std::exception &e) {
         ready = false;
         throw;
@@ -79,6 +84,9 @@ FileRepository::~FileRepository() {
 
         writeFile(root / "offsets", filters.filterWrite(Serialize::serialize(std::make_pair(maxFileId, offsetIndex))));
         writeFile(root / "index", filters.filterWrite(Serialize::serialize(std::make_pair(keyIndex, largestUnusedId))));
+        writeFile(root / "unusedIds", filters.filterWrite(Serialize::serialize(unusedIds)));
+        writeFile(root / "refcounts", filters.filterWrite(Serialize::serialize(refCounts)));
+        writeFile(root / "fileToObjs", filters.filterWrite(Serialize::serialize(fileToObjs)));
     }
 }
 
@@ -133,6 +141,7 @@ void FileRepository::flushWriteCache(std::unique_lock<std::mutex> &&lockW) {
         {
             std::lock_guard lockI(repoLock);
             offsetIndex.emplace(i.first, OffsetEntry(currentFileId, offset, i.second.size()));
+            fileToObjs[currentFileId].emplace(i.first);
         }
         offset += i.second.size();
         ofstream.rdbuf()->sputn(i.second.data(), i.second.size());
@@ -144,14 +153,81 @@ bool FileRepository::putObject(const Object &obj) {
     {
         std::lock_guard lock(repoLock);
         keyIndex[obj.type][obj.getKey()] = obj.id;
+        for (auto const &i: obj.getRefs()) refCounts[i]++;
     }
     writeObject(obj);
     return true;
 }
 
-bool FileRepository::deleteObject(const Object &obj) {
+bool FileRepository::deleteObjects(const std::vector<Object::idType> &objs) {
     if (!ready) throw Exception("Tried working with uninitialized repo!");
-    throw Exception("Deletion not implemented!");
+
+    std::queue<Object::idType> toVisit;
+    std::set<Object::idType> toDelete;
+
+    for (auto const &o: objs) {
+        toVisit.emplace(o);
+        toDelete.emplace(o);
+    }
+
+    std::cout << "Scanning for objects" << std::endl;
+
+    while (!toVisit.empty()) {
+        auto o = toVisit.back();
+        toVisit.pop();
+
+        auto obj = getObject(o);
+        for (const auto &id: obj->getRefs()) {
+            std::unique_lock lock(repoLock);
+            refCounts[id]--;
+            if (refCounts.at(id) == 0) {
+                toDelete.emplace(id);
+                toVisit.emplace(id);
+                refCounts.erase(id);
+            }
+        }
+    }
+
+    std::cout << "Found " << toDelete.size() << " to delete " << std::endl;
+
+
+    std::unordered_map<uint64_t, Object::idType> fileToObj;
+    std::set<uint64_t> touchedFiles;
+
+    for (auto const &id: toDelete) {
+        fileToObj.emplace(offsetIndex.at(id).fileId, id);
+        touchedFiles.emplace(offsetIndex.at(id).fileId);
+    }
+
+    std::cout << "Will rewrite " << touchedFiles.size() << " files" << std::endl;
+
+    for (auto const &f: touchedFiles) {
+        std::cout << "Rewriting file " << f << std::endl;
+        const auto &objs = fileToObjs.at(f);
+        std::vector<std::unique_ptr<Object>> objects;
+        for (auto const &o: objs) {
+            auto obj = getObject(o);
+            {
+                std::unique_lock lock(repoLock);
+                offsetIndex.erase(o);
+            }
+            if (toDelete.find(o) == toDelete.end()) putObject(*obj);
+        }
+        {
+            std::unique_lock lock(repoLock);
+            fileToObjs.erase(f);
+        }
+        std::filesystem::remove(root / std::to_string(f));
+    }
+    {
+        std::unique_lock lock(repoLock);
+        for (auto const &id: toDelete) {
+            unusedIds.emplace_back(id);
+            // FIXME: this is a bit inefficient
+            for (auto &m: keyIndex) erase_if(m.second, [&](const auto &t) { return toDelete.contains(t.second); });
+        }
+    }
+    return true;
 }
 
 std::vector<char> FileRepository::readFile(const std::filesystem::path &file, unsigned long long offset,
@@ -214,6 +290,11 @@ bool FileRepository::exists(Object::ObjectType type, const std::string &key) con
 
 Object::idType FileRepository::getId() {
     std::lock_guard lock(repoLock);
+    if (!unusedIds.empty()) {
+        auto ret = unusedIds.back();
+        unusedIds.pop_back();
+        return ret;
+    }
     return largestUnusedId++;
 }
 
