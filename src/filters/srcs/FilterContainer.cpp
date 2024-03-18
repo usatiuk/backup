@@ -12,11 +12,11 @@ FilterContainer &FilterContainer::addFilter(std::unique_ptr<Filter> &&f) {
 }
 
 std::vector<char> FilterContainer::filterWrite(std::vector<char> from) const {
-    for (auto const &f: filters) from = f->filterWrite(std::move(from));
+    for (auto const &f: filters) from = std::move(f->filterWrite(std::move(from)));
     return from;
 }
 
 std::vector<char> FilterContainer::filterRead(std::vector<char> from) const {
-    for (auto f = filters.crbegin(); f != filters.crend(); f++) from = (*f)->filterRead(std::move(from));
+    for (auto f = filters.crbegin(); f != filters.crend(); f++) from = std::move((*f)->filterRead(std::move(from)));
     return from;
 }
